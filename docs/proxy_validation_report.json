@@ -1,0 +1,107 @@
+{
+  "valid": true,
+  "table_counts": {
+    "State.csv": 1,
+    "District.csv": 31,
+    "UnitType.csv": 5,
+    "Unit.csv": 200,
+    "Court.csv": 120,
+    "Rank.csv": 10,
+    "Designation.csv": 10,
+    "OccupationMaster.csv": 12,
+    "ReligionMaster.csv": 7,
+    "CasteMaster.csv": 9,
+    "CaseCategory.csv": 4,
+    "CaseStatusMaster.csv": 5,
+    "GravityOffence.csv": 2,
+    "CrimeHead.csv": 10,
+    "CrimeSubHead.csv": 31,
+    "Act.csv": 12,
+    "Section.csv": 40,
+    "Employee.csv": 5000,
+    "CaseMaster.csv": 50000,
+    "Inv_OccuranceTime.csv": 50000,
+    "Accused.csv": 86111,
+    "Victim.csv": 64290,
+    "ComplainantDetails.csv": 54075,
+    "ActSectionAssociation.csv": 82241,
+    "ArrestSurrender.csv": 31625,
+    "inv_arrestsurrenderaccused.csv": 37950,
+    "ChargesheetDetails.csv": 16536,
+    "Victim_orphaned_records.csv": 979
+  },
+  "error_counts": {},
+  "warning_counts": {
+    "FOREIGN_KEY_NOT_FOUND": 3522,
+    "QUARANTINED_FILE": 1
+  },
+  "warning_file_counts": {
+    "CaseMaster.csv:FOREIGN_KEY_NOT_FOUND": 750,
+    "ArrestSurrender.csv:FOREIGN_KEY_NOT_FOUND": 474,
+    "inv_arrestsurrenderaccused.csv:FOREIGN_KEY_NOT_FOUND": 2298,
+    "Victim_orphaned_records.csv:QUARANTINED_FILE": 1
+  },
+  "errors": [],
+  "warnings": [
+    {
+      "file": "CaseMaster.csv",
+      "row": 6,
+      "code": "FOREIGN_KEY_NOT_FOUND",
+      "detail": {
+        "PolicePersonID": "8441",
+        "target": [
+          "Employee.csv",
+          "EmployeeID"
+        ]
+      }
+    },
+    {
+      "file": "CaseMaster.csv",
+      "row": 18,
+      "code": "FOREIGN_KEY_NOT_FOUND",
+      "detail": {
+        "PolicePersonID": "11789",
+        "target": [
+          "Employee.csv",
+          "EmployeeID"
+        ]
+      }
+    },
+    {
+      "file": "CaseMaster.csv",
+      "row": 22,
+      "code": "FOREIGN_KEY_NOT_FOUND",
+      "detail": {
+        "PolicePersonID": "7225",
+        "target": [
+          "Employee.csv",
+          "EmployeeID"
+        ]
+      }
+    },
+    {
+      "file": "CaseMaster.csv",
+      "row": 29,
+      "code": "FOREIGN_KEY_NOT_FOUND",
+      "detail": {
+        "PolicePersonID": "10585",
+        "target": [
+          "Employee.csv",
+          "EmployeeID"
+        ]
+      }
+    },
+    {
+      "file": "CaseMaster.csv",
+      "row": 97,
+      "code": "FOREIGN_KEY_NOT_FOUND",
+      "detail": {
+        "PolicePersonID": "11388",
+        "target": [
+          "Employee.csv",
+          "EmployeeID"
+        ]
+      }
+    }
+  ]
+}
