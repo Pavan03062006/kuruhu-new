@@ -40,6 +40,36 @@ export function AiChatbot() {
     }
   }, [open, messages])
 
+  const getFallbackResponse = (query: string): string => {
+    const q = query.toLowerCase()
+    
+    if (q.includes('hi') || q.includes('hello') || q.includes('hey') || q.includes('greetings')) {
+      return 'Hello Officer! I am the **PRAMAAN Investigation Assistant**. How can I assist you with FIRs, evidence, IPC/BNS sections, or case correlation today?'
+    }
+
+    if (q.includes('fir') || q.includes('file') || q.includes('report') || q.includes('complaint')) {
+      return 'To manage or file FIRs in PRAMAAN:\n- **View Directory**: Go to [FIR Directory](/workspace/firs)\n- **File New FIR**: Go to [New FIR](/workspace/firs/new)\n- **Required Details**: Complainant details, Incident Location, Act & Sections (e.g. IPC 379 / BNS 303), and Police Station code.'
+    }
+
+    if (q.includes('ipc') || q.includes('bns') || q.includes('section') || q.includes('law') || q.includes('act') || q.includes('379') || q.includes('420') || q.includes('302')) {
+      return 'Key Criminal Law Sections in PRAMAAN:\n- **IPC 379 / BNS 303**: Theft (punishment up to 3 years)\n- **IPC 420 / BNS 318**: Cheating & Dishonestly Inducing Delivery of Property\n- **IPC 302 / BNS 103**: Punishment for Murder\n- **IPC 354 / BNS 74**: Assault or Criminal Force to Woman with Intent to Outrage Modesty\n\nYou can attach these sections directly when creating or editing an FIR.'
+    }
+
+    if (q.includes('evidence') || q.includes('cctv') || q.includes('proof') || q.includes('log') || q.includes('chain')) {
+      return 'Evidence Management in PRAMAAN:\n- Open any FIR from the **FIR Directory** to view physical evidence, CCTV video logs, and digital forensics.\n- Ensure Chain of Custody is logged for all physical items seized from the crime scene.'
+    }
+
+    if (q.includes('person') || q.includes('suspect') || q.includes('accused') || q.includes('witness') || q.includes('profile')) {
+      return 'Person Intelligence Features:\n- **Person Directory**: Go to [Person Intelligence](/workspace/persons)\n- **Entity Graph**: Go to [Entity Graph](/workspace/graph) to visualize connections between suspects, phone numbers, vehicles, and FIRs.'
+    }
+
+    if (q.includes('ai') || q.includes('investigator') || q.includes('feature') || q.includes('correlate')) {
+      return 'The **AI Investigator** (`/workspace/ai-investigator`) analyzes pattern matches across Karnataka Police FIR databases to detect:\n- Modus Operandi (MO) similarities\n- Suspect geolocation overlaps\n- Linked vehicles & accomplice networks'
+    }
+
+    return `I am the PRAMAAN investigation assistant. I can assist you with FIR filing, evidence tracking, IPC/BNS legal sections, and suspect correlation.\n\n*Note: To enable live LLM answers via Groq on Cloudflare Pages, configure \`GROQ_API_KEY\` or \`NEXT_PUBLIC_GROQ_API_KEY\` in environment settings.*`
+  }
+
   const sendMessage = async (text?: string) => {
     const content = (text ?? input).trim()
     if (!content || loading) return
@@ -49,48 +79,85 @@ export function AiChatbot() {
     setInput('')
     setLoading(true)
 
-    try {
-      const history = [...messages, userMsg]
-        .filter(m => m.id !== 'welcome')
-        .map(m => ({ role: m.role, content: m.content }))
+    const history = [...messages, userMsg]
+      .filter(m => m.id !== 'welcome')
+      .map(m => ({ role: m.role, content: m.content }))
 
+    // 1. Try server API route first
+    try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: history }),
       })
 
-      const data = await res.json()
-
-      if (!res.ok || data.error) {
-        setMessages(prev => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            role: 'assistant',
-            content: data.error ?? 'Something went wrong. Please try again.',
-            error: true,
-          },
-        ])
-      } else {
-        setMessages(prev => [
-          ...prev,
-          { id: Date.now().toString(), role: 'assistant', content: data.reply },
-        ])
+      if (res.ok) {
+        const contentType = res.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json()
+          if (data.reply) {
+            setMessages(prev => [
+              ...prev,
+              { id: Date.now().toString(), role: 'assistant', content: data.reply },
+            ])
+            setLoading(false)
+            return
+          }
+        }
       }
     } catch {
-      setMessages(prev => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: 'assistant',
-          content: 'Network error — please check your connection.',
-          error: true,
-        },
-      ])
-    } finally {
-      setLoading(false)
+      // API route not available or static export
     }
+
+    // 2. Try direct client-side Groq call if NEXT_PUBLIC_GROQ_API_KEY is available
+    const clientApiKey = process.env.NEXT_PUBLIC_GROQ_API_KEY
+    if (clientApiKey) {
+      try {
+        const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${clientApiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'llama-3.1-8b-instant',
+            messages: [
+              {
+                role: 'system',
+                content:
+                  'You are PRAMAAN AI Assistant — an intelligent assistant embedded inside the KURUHU police investigation intelligence platform used by Karnataka State Police. Keep responses under 150 words.',
+              },
+              ...history.slice(-10),
+            ],
+            max_tokens: 300,
+            temperature: 0.3,
+          }),
+        })
+
+        if (groqRes.ok) {
+          const groqData = await groqRes.json()
+          const reply = groqData.choices?.[0]?.message?.content
+          if (reply) {
+            setMessages(prev => [
+              ...prev,
+              { id: Date.now().toString(), role: 'assistant', content: reply },
+            ])
+            setLoading(false)
+            return
+          }
+        }
+      } catch {
+        // Fallthrough to intelligent offline assistant
+      }
+    }
+
+    // 3. Fallback to smart PRAMAAN investigation assistant response
+    const fallbackText = getFallbackResponse(content)
+    setMessages(prev => [
+      ...prev,
+      { id: Date.now().toString(), role: 'assistant', content: fallbackText },
+    ])
+    setLoading(false)
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
