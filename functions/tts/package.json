@@ -1,0 +1,12 @@
+{
+  "name": "tts",
+  "version": "1.0.0",
+  "description": "Zoho Catalyst Zia TTS proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}

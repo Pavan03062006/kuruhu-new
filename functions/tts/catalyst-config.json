@@ -1,0 +1,7 @@
+{
+  "name": "tts",
+  "description": "Zoho Catalyst Zia TTS proxy with auto OAuth token refresh",
+  "type": "Advanced IO",
+  "lang": "Node18",
+  "version": 1
+}

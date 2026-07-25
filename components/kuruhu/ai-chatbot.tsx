@@ -149,7 +149,14 @@ export function AiChatbot() {
 
     if (lang === 'kn') {
       setIsSpeaking(true)
-      fetch('/api/tts', {
+      // Zoho Catalyst Function URL — set NEXT_PUBLIC_TTS_FUNCTION_URL in Slate env vars
+      const ttsFunctionUrl = process.env.NEXT_PUBLIC_TTS_FUNCTION_URL || ''
+      if (!ttsFunctionUrl) {
+        console.error('TTS function URL not configured (NEXT_PUBLIC_TTS_FUNCTION_URL)')
+        setIsSpeaking(false)
+        return
+      }
+      fetch(ttsFunctionUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -163,7 +170,7 @@ export function AiChatbot() {
         .then(async (res) => {
           if (!res.ok) {
             const errBody = await res.text().catch(() => '')
-            throw new Error(`TTS API error ${res.status}: ${errBody}`)
+            throw new Error(`TTS error ${res.status}: ${errBody}`)
           }
           const blob = await res.blob()
           if (blob.size === 0) throw new Error('Zoho TTS returned empty audio')
