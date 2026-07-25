@@ -1,0 +1,8 @@
+{
+  "pages": {},
+  "app": {
+    "[project]/app/workspace/persons/page": []
+  },
+  "appUsingSizeAdjust": true,
+  "pagesUsingSizeAdjust": false
+}

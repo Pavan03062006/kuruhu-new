@@ -1,0 +1,8 @@
+{
+  "pages": {},
+  "app": {
+    "[project]/app/workspace/access-denied/page": []
+  },
+  "appUsingSizeAdjust": true,
+  "pagesUsingSizeAdjust": false
+}

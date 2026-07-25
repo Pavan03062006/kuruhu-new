@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/workspace/layout,_N_T_/workspace/firs/layout,_N_T_/workspace/firs/new/layout,_N_T_/workspace/firs/new/page,_N_T_/workspace/firs/new"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/workspace/firs/new/__PAGE__",
+    "/workspace/firs/new",
+    "/workspace/firs",
+    "/workspace",
+    "/_index",
+    "/_head"
+  ]
+}
