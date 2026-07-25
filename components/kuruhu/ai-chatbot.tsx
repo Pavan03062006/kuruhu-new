@@ -127,102 +127,76 @@ export function AiChatbot() {
     recognition.start()
   }
 
-  // Voice Output (Text-to-Speech)
+  // Voice Output (Text-to-Speech) — Zoho Catalyst Zia TTS for all languages
   const speakText = (text: string) => {
     if (typeof window === 'undefined') return
 
-    // If currently speaking, stop it
+    // If currently speaking, stop
     if (isSpeaking) {
       if (activeAudio) {
         activeAudio.pause()
         setActiveAudio(null)
       }
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel()
-      }
       setIsSpeaking(false)
       return
     }
 
-    // Clean markdown symbols for natural reading
     const cleanText = text.replace(/[*#_`[\]()]/g, '')
 
-    if (lang === 'kn') {
-      setIsSpeaking(true)
-      // Zoho Catalyst Function URL — set NEXT_PUBLIC_TTS_FUNCTION_URL in Slate env vars
-      const ttsFunctionUrl = process.env.NEXT_PUBLIC_TTS_FUNCTION_URL || ''
-      if (!ttsFunctionUrl) {
-        console.error('TTS function URL not configured (NEXT_PUBLIC_TTS_FUNCTION_URL)')
-        setIsSpeaking(false)
-        return
-      }
-      fetch(ttsFunctionUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: cleanText,
-          speaker: 'Anu',
-          pitch: 'moderate',
-          speed: 'moderate',
-          emotion: 'neutral',
-        }),
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const errBody = await res.text().catch(() => '')
-            throw new Error(`TTS error ${res.status}: ${errBody}`)
-          }
-          const blob = await res.blob()
-          if (blob.size === 0) throw new Error('Zoho TTS returned empty audio')
+    // Map app language to Zoho TTS language code
+    const zohoLang = lang === 'kn' ? 'kn' : 'en'
+    const speaker  = lang === 'kn' ? 'Anu'  : 'Mary'
 
-          const audioUrl = URL.createObjectURL(blob)
-          const audio = new Audio(audioUrl)
-
-          audio.onended = () => {
-            setIsSpeaking(false)
-            setActiveAudio(null)
-            URL.revokeObjectURL(audioUrl)
-          }
-          audio.onerror = (e) => {
-            console.error('Audio playback error:', e)
-            setIsSpeaking(false)
-            setActiveAudio(null)
-            URL.revokeObjectURL(audioUrl)
-          }
-
-          setActiveAudio(audio)
-          await audio.play()
-        })
-        .catch((err) => {
-          console.error('Zoho Catalyst TTS error:', err)
-          setIsSpeaking(false)
-          setActiveAudio(null)
-        })
-    } else {
-      fallbackBrowserSpeech(cleanText)
+    const ttsFunctionUrl = process.env.NEXT_PUBLIC_TTS_FUNCTION_URL || ''
+    if (!ttsFunctionUrl) {
+      console.warn('NEXT_PUBLIC_TTS_FUNCTION_URL not set — TTS disabled')
+      return
     }
-  }
-
-  const fallbackBrowserSpeech = (cleanText: string) => {
-    if (!('speechSynthesis' in window)) return
-    
-    const utterance = new SpeechSynthesisUtterance(cleanText)
-    utterance.lang = lang === 'kn' ? 'kn-IN' : 'en-IN'
-    utterance.rate = lang === 'kn' ? 0.88 : 0.95
-
-    if (lang === 'kn') {
-      const voices = window.speechSynthesis.getVoices()
-      const knVoice = voices.find(
-        v => v.lang === 'kn-IN' || v.lang === 'kn_IN' || v.name.toLowerCase().includes('kannada') || v.name.toLowerCase().includes('kn')
-      )
-      if (knVoice) utterance.voice = knVoice
-    }
-
-    utterance.onend = () => setIsSpeaking(false)
-    utterance.onerror = () => setIsSpeaking(false)
 
     setIsSpeaking(true)
-    window.speechSynthesis.speak(utterance)
+    fetch(ttsFunctionUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: cleanText,
+        language: zohoLang,
+        speaker,
+        pitch: 'moderate',
+        speed: 'moderate',
+        emotion: 'neutral',
+      }),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const errBody = await res.text().catch(() => '')
+          throw new Error(`TTS error ${res.status}: ${errBody}`)
+        }
+        const blob = await res.blob()
+        if (blob.size === 0) throw new Error('Zoho TTS returned empty audio')
+
+        const audioUrl = URL.createObjectURL(blob)
+        const audio = new Audio(audioUrl)
+
+        audio.onended = () => {
+          setIsSpeaking(false)
+          setActiveAudio(null)
+          URL.revokeObjectURL(audioUrl)
+        }
+        audio.onerror = (e) => {
+          console.error('Audio playback error:', e)
+          setIsSpeaking(false)
+          setActiveAudio(null)
+          URL.revokeObjectURL(audioUrl)
+        }
+
+        setActiveAudio(audio)
+        await audio.play()
+      })
+      .catch((err) => {
+        console.error('Zoho Catalyst TTS error:', err)
+        setIsSpeaking(false)
+        setActiveAudio(null)
+      })
   }
 
   // PDF Export of Conversation History

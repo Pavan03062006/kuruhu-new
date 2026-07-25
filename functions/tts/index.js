@@ -70,11 +70,12 @@ module.exports = async (context, basicIO) => {
   try {
     const body  = JSON.parse(basicIO.getRequest().body || '{}')
     const {
-      text    = '',
-      speaker = 'Anu',
-      speed   = 'moderate',
-      pitch   = 'moderate',
-      emotion = 'neutral',
+      text     = '',
+      language = 'en',
+      speaker  = language === 'kn' ? 'Anu' : 'Mary',
+      speed    = 'moderate',
+      pitch    = 'moderate',
+      emotion  = 'neutral',
     } = body
 
     if (!text.trim()) {
@@ -92,7 +93,7 @@ module.exports = async (context, basicIO) => {
         'CATALYST-ORG':  ORG_ID,
         'Authorization': `Zoho-oauthtoken ${token}`,
       },
-      body: JSON.stringify({ text, language: 'kn', speaker, speed, pitch, emotion }),
+      body: JSON.stringify({ text, language, speaker, speed, pitch, emotion }),
     })
 
     if (!ttsRes.ok) {
