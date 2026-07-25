@@ -69,6 +69,7 @@ export function AiChatbot() {
   const [loading, setLoading] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [activeAudio, setActiveAudio] = useState<HTMLAudioElement | null>(null)
   const [showAuditDetails, setShowAuditDetails] = useState<string | null>(null)
 
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -128,34 +129,83 @@ export function AiChatbot() {
 
   // Voice Output (Text-to-Speech)
   const speakText = (text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+    if (typeof window === 'undefined') return
 
+    // If currently speaking, stop it
     if (isSpeaking) {
-      window.speechSynthesis.cancel()
+      if (activeAudio) {
+        activeAudio.pause()
+        setActiveAudio(null)
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel()
+      }
       setIsSpeaking(false)
       return
     }
 
     // Clean markdown symbols for natural reading
     const cleanText = text.replace(/[*#_`[\]()]/g, '')
-    const utterance = new SpeechSynthesisUtterance(cleanText)
 
     if (lang === 'kn') {
-      utterance.lang = 'kn-IN'
-      utterance.rate = 0.88 // Clear, articulate cadence for natural Kannada phonetics
-      utterance.pitch = 1.05
+      // Use Zoho Catalyst TTS proxy endpoint with POST
+      setIsSpeaking(true);
+      fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: cleanText,
+          speaker: 'Anu',
+          pitch: 'moderate',
+          speed: 'moderate',
+          emotion: 'neutral'
+        })
+      })
+      .then(async (res) => {
+        if (!res.ok) throw new Error('TTS API error');
+        const blob = await res.blob();
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+        
+        audio.onended = () => {
+          setIsSpeaking(false);
+          setActiveAudio(null);
+          URL.revokeObjectURL(audioUrl);
+        };
+        audio.onerror = () => {
+          console.error('Zoho Catalyst TTS playback error, falling back to browser synthesis.');
+          fallbackBrowserSpeech(cleanText);
+          URL.revokeObjectURL(audioUrl);
+        };
 
-      // Select explicit Kannada voice if present in browser voice registry
+        setActiveAudio(audio);
+        audio.play().catch((err) => {
+          console.error('Failed to play audio:', err);
+          fallbackBrowserSpeech(cleanText);
+        });
+      })
+      .catch((err) => {
+        console.error('Error calling Zoho Catalyst TTS:', err);
+        fallbackBrowserSpeech(cleanText);
+      });
+    } else {
+      fallbackBrowserSpeech(cleanText)
+    }
+  }
+
+  const fallbackBrowserSpeech = (cleanText: string) => {
+    if (!('speechSynthesis' in window)) return
+    
+    const utterance = new SpeechSynthesisUtterance(cleanText)
+    utterance.lang = lang === 'kn' ? 'kn-IN' : 'en-IN'
+    utterance.rate = lang === 'kn' ? 0.88 : 0.95
+
+    if (lang === 'kn') {
       const voices = window.speechSynthesis.getVoices()
       const knVoice = voices.find(
         v => v.lang === 'kn-IN' || v.lang === 'kn_IN' || v.name.toLowerCase().includes('kannada') || v.name.toLowerCase().includes('kn')
       )
-      if (knVoice) {
-        utterance.voice = knVoice
-      }
-    } else {
-      utterance.lang = 'en-IN'
-      utterance.rate = 0.95
+      if (knVoice) utterance.voice = knVoice
     }
 
     utterance.onend = () => setIsSpeaking(false)
