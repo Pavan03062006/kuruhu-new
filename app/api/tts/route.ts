@@ -1,59 +1,76 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// ── In-memory token cache ──────────────────────────────────────────────────
+let cachedToken: string | null = null
+let tokenExpiresAt = 0 // Unix ms
+
+const CLIENT_ID     = process.env.CATALYST_CLIENT_ID     || '1000.E1GX0FYJVGZ1ZZ8YVGSLJ5CG42Z95Y'
+const CLIENT_SECRET = process.env.CATALYST_CLIENT_SECRET || '79e5a9ad0030e67d144087501004b7067cc1263c6e'
+const REFRESH_TOKEN = process.env.CATALYST_TTS_REFRESH_TOKEN || '1000.a863c74ab8107181f1eb95464e5072df.8aa083546f6da3c17e3f85d31fea092b'
+const ORG_ID        = process.env.CATALYST_ORG           || '60078981735'
+const TTS_ENDPOINT  = 'https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tts/synthesize'
+const TOKEN_URL     = 'https://accounts.zoho.in/oauth/v2/token'
+
+async function getAccessToken(): Promise<string> {
+  // Return cached token if still valid (with 60 s buffer)
+  if (cachedToken && Date.now() < tokenExpiresAt - 60_000) {
+    return cachedToken
+  }
+
+  const params = new URLSearchParams({
+    grant_type:    'refresh_token',
+    client_id:     CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    refresh_token: REFRESH_TOKEN,
+  })
+
+  const res = await fetch(TOKEN_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body:    params.toString(),
+  })
+
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(`Zoho token refresh failed (${res.status}): ${body}`)
+  }
+
+  const data = await res.json()
+
+  if (!data.access_token) {
+    throw new Error(`Zoho token refresh returned no access_token: ${JSON.stringify(data)}`)
+  }
+
+  cachedToken    = data.access_token as string
+  // expires_in is in seconds; default to 3600 if absent
+  tokenExpiresAt = Date.now() + (data.expires_in ?? 3600) * 1_000
+
+  return cachedToken
+}
+
+// ── Route handler ──────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const {
-      text = '',
+      text    = '',
       speaker = 'Anu',
-      speed = 'moderate',
-      pitch = 'moderate',
+      speed   = 'moderate',
+      pitch   = 'moderate',
       emotion = 'neutral',
     } = body
 
-    if (!text) {
-      return NextResponse.json({ error: 'Text is required in request body' }, { status: 400 })
+    if (!text.trim()) {
+      return NextResponse.json({ error: 'text is required' }, { status: 400 })
     }
 
-    return handleSynthesize({ text, speaker, speed, pitch, emotion })
-  } catch (error) {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
-  }
-}
+    const token = await getAccessToken()
 
-async function handleSynthesize({
-  text,
-  speaker,
-  speed,
-  pitch,
-  emotion,
-}: {
-  text: string
-  speaker: string
-  speed: string
-  pitch: string
-  emotion: string
-}) {
-  const endpoint =
-    process.env.CATALYST_TTS_ENDPOINT ||
-    'https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tts/synthesize'
-  const orgId = process.env.CATALYST_ORG || '60078981735'
-  const token = process.env.CATALYST_TTS_TOKEN || ''
-
-  if (!token) {
-    console.warn('CATALYST_TTS_TOKEN is not configured. Falling back to empty audio.')
-    return new Response(Buffer.from([]), {
-      status: 200,
-      headers: { 'Content-Type': 'audio/wav' },
-    })
-  }
-
-  try {
-    const response = await fetch(endpoint, {
+    const ttsRes = await fetch(TTS_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'CATALYST-ORG': orgId,
+        'CATALYST-ORG':  ORG_ID,
         'Authorization': `Zoho-oauthtoken ${token}`,
       },
       body: JSON.stringify({
@@ -66,26 +83,30 @@ async function handleSynthesize({
       }),
     })
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Zoho Catalyst TTS synthesis API error:', response.status, errorText)
+    if (!ttsRes.ok) {
+      const errBody = await ttsRes.text()
+      console.error('Zoho TTS error:', ttsRes.status, errBody)
       return NextResponse.json(
-        { error: `Failed to synthesize speech from Zoho Catalyst: ${errorText}` },
-        { status: response.status }
+        { error: `Zoho TTS API error (${ttsRes.status}): ${errBody}` },
+        { status: ttsRes.status }
       )
     }
 
-    const arrayBuffer = await response.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    const arrayBuffer = await ttsRes.arrayBuffer()
+    const buffer      = Buffer.from(arrayBuffer)
 
     return new Response(buffer, {
       headers: {
-        'Content-Type': 'audio/wav',
+        'Content-Type':   'audio/wav',
         'Content-Length': buffer.byteLength.toString(),
+        'Cache-Control':  'no-store',
       },
     })
-  } catch (error) {
-    console.error('Error in Zoho Catalyst TTS handler:', error)
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+  } catch (err) {
+    console.error('TTS route error:', err)
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Internal Server Error' },
+      { status: 500 }
+    )
   }
 }
