@@ -6,7 +6,24 @@
  */
 
 import { supabase } from '@/lib/supabase'
-import type { Fir, Person, EvidenceItem, Vehicle, AiFinding, AppNotification } from '@/lib/mock-data'
+import type {
+  Fir,
+  Person,
+  EvidenceItem,
+  Vehicle,
+  AiFinding,
+  AppNotification,
+  CrimeHotspot,
+  PredictiveEarlyWarning,
+  ProactivePatrolRoute,
+  CrimePatternCluster,
+} from '@/lib/mock-data'
+import {
+  CRIME_HOTSPOTS,
+  PREDICTIVE_EARLY_WARNINGS,
+  PROACTIVE_PATROL_ROUTES,
+  CRIME_PATTERNS,
+} from '@/lib/mock-data'
 
 export class ApiError extends Error {
   constructor(public readonly status: number, message: string) {
@@ -633,5 +650,25 @@ export async function apiRequest<T>(path: string): Promise<T> {
   if (path === '/vehicles') return fetchVehicles() as unknown as Promise<T>
   if (path === '/ai-findings') return fetchAiFindings() as unknown as Promise<T>
   if (path === '/notifications') return fetchNotifications() as unknown as Promise<T>
+  if (path === '/hotspots') return fetchCrimeHotspots() as unknown as Promise<T>
+  if (path === '/early-warnings') return fetchEarlyWarnings() as unknown as Promise<T>
+  if (path === '/patrol-routes') return fetchPatrolRoutes() as unknown as Promise<T>
+  if (path === '/crime-patterns') return fetchCrimePatterns() as unknown as Promise<T>
   throw new ApiError(404, `No handler for ${path}`)
+}
+
+export async function fetchCrimeHotspots(): Promise<CrimeHotspot[]> {
+  return CRIME_HOTSPOTS
+}
+
+export async function fetchEarlyWarnings(): Promise<PredictiveEarlyWarning[]> {
+  return PREDICTIVE_EARLY_WARNINGS
+}
+
+export async function fetchPatrolRoutes(): Promise<ProactivePatrolRoute[]> {
+  return PROACTIVE_PATROL_ROUTES
+}
+
+export async function fetchCrimePatterns(): Promise<CrimePatternCluster[]> {
+  return CRIME_PATTERNS
 }

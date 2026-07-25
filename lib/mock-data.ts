@@ -46,6 +46,21 @@ export type Person = {
   address: string
   identifier: string
   firIds: string[]
+  socioDemographics?: {
+    occupation: string
+    educationLevel: string
+    incomeBracket: string
+    originDistrict: string
+    familyLinksCount: number
+    economicRiskFactor: 'High' | 'Medium' | 'Low'
+  }
+  behavioralProfile?: {
+    modusOperandiSignature: string
+    recidivismScore: number // 0 - 100
+    violencePropensity: 'High' | 'Medium' | 'Low'
+    communicationFingerprint: string
+    accompliceRiskIndex: number // 0 - 100
+  }
   knownLocations: string[]
   relationships: { personId: string; label: string; firId: string; verified: boolean }[]
   lastActivity: string
@@ -120,6 +135,21 @@ export const PERSONS: Person[] = [
     id: 'P-1001', name: 'Ravi Kumar S', aliases: ['Ravi Anna', 'RK'], age: 34, gender: 'M', role: 'accused', risk: 'high',
     phone: '+91 98xx xx4821', address: 'BTM Layout 2nd Stage, Bengaluru', identifier: 'AAD-XXXX-8821',
     firIds: ['F-2401', 'F-2388', 'F-2296'], knownLocations: ['BTM Layout', 'Madiwala Market', 'Hosur Road'],
+    socioDemographics: {
+      occupation: 'Unemployed (Former Auto Driver)',
+      educationLevel: 'Secondary School (SSLC)',
+      incomeBracket: 'Low Income (< ₹1.5L/year)',
+      originDistrict: 'Mandya',
+      familyLinksCount: 3,
+      economicRiskFactor: 'High',
+    },
+    behavioralProfile: {
+      modusOperandiSignature: 'Night Burglary & Two-Wheeler Theft using Master Keys; targets unmanned residential parking 02:00-04:00 AM.',
+      recidivismScore: 84,
+      violencePropensity: 'Medium',
+      communicationFingerprint: 'Frequent burner SIM switching after crimes; 14 contacts identified in network graph.',
+      accompliceRiskIndex: 91,
+    },
     relationships: [
       { personId: 'P-1002', label: 'Associate — co-accused', firId: 'F-2401', verified: true },
       { personId: 'P-1004', label: 'Shares phone contact', firId: 'F-2388', verified: false },
@@ -130,6 +160,21 @@ export const PERSONS: Person[] = [
     id: 'P-1002', name: 'Faisal Ahmed', aliases: ['Chotu'], age: 27, gender: 'M', role: 'suspect', risk: 'high',
     phone: '+91 97xx xx1174', address: 'Shivajinagar, Bengaluru', identifier: 'DL-KA01-XX7742',
     firIds: ['F-2401', 'F-2367'], knownLocations: ['Shivajinagar', 'KR Market'],
+    socioDemographics: {
+      occupation: 'Scrap Dealer Assistant',
+      educationLevel: 'Higher Secondary (PUC)',
+      incomeBracket: 'Low Income (< ₹2L/year)',
+      originDistrict: 'Bengaluru Urban',
+      familyLinksCount: 4,
+      economicRiskFactor: 'High',
+    },
+    behavioralProfile: {
+      modusOperandiSignature: 'Fencing stolen vehicle parts & altered chassis numbers; rapid liquidation within 48 hours.',
+      recidivismScore: 76,
+      violencePropensity: 'Low',
+      communicationFingerprint: 'Encrypted message groups & UPI micro-transactions to accomplices.',
+      accompliceRiskIndex: 82,
+    },
     relationships: [
       { personId: 'P-1001', label: 'Associate — co-accused', firId: 'F-2401', verified: true },
       { personId: 'P-1003', label: 'Seen together (CCTV)', firId: 'F-2367', verified: true },
@@ -439,3 +484,218 @@ export const WEEKLY_INTAKE: { day: string; count: number }[] = [
   { day: 'Tue', count: 4 },
   { day: 'Wed', count: 7 },
 ]
+
+/* ---------------------- Crime Intelligence & Predictive Datasets ---------------------- */
+
+export type CrimeHotspot = {
+  id: string
+  district: string
+  locationName: string
+  lat: number
+  lng: number
+  crimeCount: number
+  dominantCrimeType: string
+  riskLevel: 'critical' | 'high' | 'moderate'
+  peakHours: string
+  predictedTrend: 'increasing' | 'stable' | 'decreasing'
+}
+
+export const CRIME_HOTSPOTS: CrimeHotspot[] = [
+  {
+    id: 'HS-01',
+    district: 'Bengaluru City',
+    locationName: 'Madiwala Market & Hosur Road Junction',
+    lat: 12.9226,
+    lng: 77.6174,
+    crimeCount: 38,
+    dominantCrimeType: 'Night Vehicle Theft & Chain Snatching',
+    riskLevel: 'critical',
+    peakHours: '01:00 AM – 04:30 AM',
+    predictedTrend: 'increasing',
+  },
+  {
+    id: 'HS-02',
+    district: 'Bengaluru City',
+    locationName: 'KR Market & Cottonpet Main Road',
+    lat: 12.9657,
+    lng: 77.5762,
+    crimeCount: 29,
+    dominantCrimeType: 'Commercial Burglary & Pickpocketing',
+    riskLevel: 'high',
+    peakHours: '05:00 PM – 09:00 PM',
+    predictedTrend: 'stable',
+  },
+  {
+    id: 'HS-03',
+    district: 'Mysuru City',
+    locationName: 'Devaraja Market & Bus Stand Corridor',
+    lat: 12.3087,
+    lng: 76.6531,
+    crimeCount: 22,
+    dominantCrimeType: 'Tourist Pickpocketing & ATM Fraud',
+    riskLevel: 'moderate',
+    peakHours: '11:00 AM – 03:00 PM',
+    predictedTrend: 'increasing',
+  },
+  {
+    id: 'HS-04',
+    district: 'Hubballi-Dharwad City',
+    locationName: 'Old Bus Stand Road & Lamington Road',
+    lat: 15.3647,
+    lng: 75.124,
+    crimeCount: 19,
+    dominantCrimeType: 'Two-Wheeler Theft Syndicate',
+    riskLevel: 'high',
+    peakHours: '08:00 PM – 11:30 PM',
+    predictedTrend: 'decreasing',
+  },
+  {
+    id: 'HS-05',
+    district: 'Belagavi City',
+    locationName: 'Kirloskar Road & Khade Bazar',
+    lat: 15.8497,
+    lng: 74.5086,
+    crimeCount: 16,
+    dominantCrimeType: 'Cyber SIM Spoofing & Financial Cheating',
+    riskLevel: 'high',
+    peakHours: '10:00 AM – 06:00 PM',
+    predictedTrend: 'increasing',
+  },
+]
+
+export type PredictiveEarlyWarning = {
+  id: string
+  title: string
+  description: string
+  district: string
+  riskCategory: 'Syndicate Movement' | 'Recidivist Activity' | 'Cyber Spike' | 'Public Order'
+  confidence: number
+  recommendedAction: string
+  createdAt: string
+}
+
+export const PREDICTIVE_EARLY_WARNINGS: PredictiveEarlyWarning[] = [
+  {
+    id: 'EW-901',
+    title: 'Inter-district Two-Wheeler Theft Syndicate Active',
+    description: 'AI Modus Operandi matcher detected identical master-key lock picking patterns in Bengaluru South & Mandya. High probability of cross-border fencing near Hosur border.',
+    district: 'Bengaluru City / Mandya',
+    riskCategory: 'Syndicate Movement',
+    confidence: 0.92,
+    recommendedAction: 'Deploy midnight check-posts on NH-44 & alert Hosur Road police checkpoints.',
+    createdAt: '2026-07-25T08:30:00+05:30',
+  },
+  {
+    id: 'EW-902',
+    title: 'Repeat Offender Release Spike Warning',
+    description: '3 high-recidivism offenders (P-1001 linked network) released on bail within last 7 days. Historical data indicates 78% re-offence window within 14 days of release.',
+    district: 'Bengaluru City',
+    riskCategory: 'Recidivist Activity',
+    confidence: 0.88,
+    recommendedAction: 'Issue Section 107 BNSS / CrPC preventive surveillance notices to station IOs.',
+    createdAt: '2026-07-24T16:45:00+05:30',
+  },
+  {
+    id: 'EW-903',
+    title: 'Cyber OTP/UPI Impersonation Campaign Alert',
+    description: 'Socio-demographic behavioral model flagged 18 complaints targeting senior citizens in Malleshwaram & Jayanagar via spoofed KSEB electricity bill SMS links.',
+    district: 'Bengaluru City',
+    riskCategory: 'Cyber Spike',
+    confidence: 0.95,
+    recommendedAction: 'Broadcast public awareness alert via 1930 Cyber helpline & freeze identified mule accounts.',
+    createdAt: '2026-07-25T10:15:00+05:30',
+  },
+]
+
+export type ProactivePatrolRoute = {
+  id: string
+  routeName: string
+  district: string
+  assignedStation: string
+  targetHotspots: string[]
+  optimalTimeWindow: string
+  efficiencyScore: number
+  status: 'active' | 'scheduled' | 'completed'
+}
+
+export const PROACTIVE_PATROL_ROUTES: ProactivePatrolRoute[] = [
+  {
+    id: 'PR-101',
+    routeName: 'Alpha Sector Midnight Patrol (BTM-Madiwala Belt)',
+    district: 'Bengaluru City',
+    assignedStation: 'Jayanagar PS & Madiwala PS',
+    targetHotspots: ['Madiwala Market', 'Hosur Road Junction', 'BTM 2nd Stage'],
+    optimalTimeWindow: '01:00 AM – 05:00 AM',
+    efficiencyScore: 94,
+    status: 'active',
+  },
+  {
+    id: 'PR-102',
+    routeName: 'Bravo Commercial Corridor Patrol (KR Market - Cottonpet)',
+    district: 'Bengaluru City',
+    assignedStation: 'City Market PS',
+    targetHotspots: ['KR Market West Gate', 'Cottonpet Main Road'],
+    optimalTimeWindow: '05:00 PM – 10:00 PM',
+    efficiencyScore: 89,
+    status: 'scheduled',
+  },
+  {
+    id: 'PR-103',
+    routeName: 'Charlie Cyber & Financial Vulnerability Grid',
+    district: 'Bengaluru City',
+    assignedStation: 'Cyber Crime Police Station',
+    targetHotspots: ['Malleshwaram Banking Corridor', 'Indiranagar Tech Parks'],
+    optimalTimeWindow: '10:00 AM – 04:00 PM',
+    efficiencyScore: 91,
+    status: 'active',
+  },
+]
+
+export type CrimePatternCluster = {
+  id: string
+  patternName: string
+  category: string
+  affectedDistricts: string[]
+  firCount: number
+  suspectsIdentified: number
+  moSignature: string
+  riskLevel: 'critical' | 'high' | 'medium'
+  keyInsight: string
+}
+
+export const CRIME_PATTERNS: CrimePatternCluster[] = [
+  {
+    id: 'CP-01',
+    patternName: 'Organized Midnight Two-Wheeler Theft Network',
+    category: 'Property Crime',
+    affectedDistricts: ['Bengaluru City', 'Mandya', 'Ramanagara'],
+    firCount: 14,
+    suspectsIdentified: 5,
+    moSignature: 'Master key lock picking; target vehicle parked in dark residential lanes between 02:00 and 04:30 AM.',
+    riskLevel: 'critical',
+    keyInsight: 'AI pattern extraction links FIR-2026-0187 with 3 regional FIRs via identical key tool marks.',
+  },
+  {
+    id: 'CP-02',
+    patternName: 'Elderly Utility Bill Impersonation Cyber Fraud',
+    category: 'Cyber Financial Crime',
+    affectedDistricts: ['Bengaluru City', 'Mysuru City', 'Belagavi City'],
+    firCount: 23,
+    suspectsIdentified: 4,
+    moSignature: 'Spoofed SMS warning power disconnection; remote screen control app installation via APK link.',
+    riskLevel: 'high',
+    keyInsight: 'Socio-demographic profiling indicates 82% of victims are retired citizens aged > 60 years.',
+  },
+  {
+    id: 'CP-03',
+    patternName: 'Inter-State Fake Gold Loan Collateral Syndicate',
+    category: 'Financial Impersonation',
+    affectedDistricts: ['Hubballi-Dharwad City', 'Vijayapura', 'Belagavi City'],
+    firCount: 9,
+    suspectsIdentified: 3,
+    moSignature: 'Copper-core gold plated jewelry pledged at NBFC branches using forged Aadhaar cards.',
+    riskLevel: 'high',
+    keyInsight: 'Entity network graph detected shared mobile contacts between suspects in Belagavi and Hubballi.',
+  },
+]
+

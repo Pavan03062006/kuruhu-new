@@ -8,9 +8,21 @@ import { relativeTime, type Person, type PersonRole } from '@/lib/mock-data'
 import { fetchPersons } from '@/services/api-client'
 import { cn } from '@/lib/utils'
 
+import { useLanguage } from '@/components/providers/language-provider'
+
 const ROLES: (PersonRole | 'all')[] = ['all', 'accused', 'suspect', 'complainant', 'witness', 'victim']
 
+const ROLE_KN: Record<string, string> = {
+  all: 'ಎಲ್ಲಾ',
+  accused: 'ಆರೋಪಿ',
+  suspect: 'ಶಂಕಿತ',
+  complainant: 'ದೂರುದಾರ',
+  witness: 'ಸಾಕ್ಷಿ',
+  victim: 'ಸಂತ್ರಸ್ತ',
+}
+
 export function PersonDirectory() {
+  const { language, t } = useLanguage()
   const [persons, setPersons] = useState<Person[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
@@ -35,7 +47,10 @@ export function PersonDirectory() {
 
   return (
     <>
-      <PageHeader title="Person Intelligence" description="Search people across investigations by name, alias, phone, or identifier." />
+      <PageHeader
+        title={t('person.title', 'Person Intelligence')}
+        description={t('person.desc', 'Search people across investigations by name, alias, phone, or identifier.')}
+      />
 
       <div className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-surface p-3 shadow-sm">
         <div className="flex min-w-56 flex-1 items-center gap-2 rounded-lg border border-line bg-canvas px-3">
@@ -43,7 +58,7 @@ export function PersonDirectory() {
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder="Name, alias, phone, identifier…"
+            placeholder={t('person.searchPlaceholder', 'Name, alias, phone, identifier…')}
             className="h-9 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
             aria-label="Search persons"
           />
@@ -60,7 +75,7 @@ export function PersonDirectory() {
                 role === r ? 'bg-navy text-white' : 'bg-canvas text-ink-muted ring-1 ring-inset ring-line hover:text-ink'
               )}
             >
-              {r}
+              {language === 'kn' ? (ROLE_KN[r] || r) : r}
             </button>
           ))}
         </div>

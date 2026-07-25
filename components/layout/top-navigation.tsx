@@ -2,13 +2,15 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Bell, LogOut, Plus } from 'lucide-react'
+import { Bell, Globe, LogOut, Plus } from 'lucide-react'
 import { CommandSearch } from '@/components/kuruhu/command-search'
 import { useAuth } from '@/features/auth/components/auth-provider'
+import { useLanguage } from '@/components/providers/language-provider'
 import { NOTIFICATIONS } from '@/lib/mock-data'
 
 export function TopNavigation() {
   const { user, logout } = useAuth()
+  const { language, setLanguage, t } = useLanguage()
   const router = useRouter()
   const unread = NOTIFICATIONS.filter(n => !n.read).length
   const signOut = async () => { await logout(); router.replace('/') }
@@ -26,15 +28,35 @@ export function TopNavigation() {
     .toUpperCase() || 'US'
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-line bg-white/90 px-4 backdrop-blur-md md:px-6">
+    <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-white/90 px-4 backdrop-blur-md md:px-6">
       <div className="min-w-0 flex-1"><CommandSearch /></div>
+
+      {/* Global Language Selector Pill */}
+      <div className="flex items-center rounded-lg border border-line bg-canvas p-1">
+        <button
+          onClick={() => setLanguage('en')}
+          className={`px-2 py-1 text-xs font-semibold rounded-md transition-colors ${
+            language === 'en' ? 'bg-navy text-white shadow-sm' : 'text-slate-600 hover:text-navy'
+          }`}
+        >
+          EN
+        </button>
+        <button
+          onClick={() => setLanguage('kn')}
+          className={`px-2 py-1 text-xs font-semibold rounded-md transition-colors ${
+            language === 'kn' ? 'bg-navy text-cyan shadow-sm' : 'text-slate-600 hover:text-navy'
+          }`}
+        >
+          ಕನ್ನಡ
+        </button>
+      </div>
 
       {user?.role !== 'civilian' && (
         <Link
           href="/workspace/firs/new"
           className="hidden items-center gap-1.5 rounded-lg bg-navy px-3.5 py-2 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-navy-700 md:inline-flex"
         >
-          <Plus className="size-4" aria-hidden /> Create FIR
+          <Plus className="size-4" aria-hidden /> {language === 'kn' ? 'ಎಫ್‌ಐಆರ್ ಸೃಷ್ಟಿಸಿ' : 'Create FIR'}
         </Link>
       )}
 

@@ -72,6 +72,84 @@ export function PersonProfile({ personId }: { personId: string }) {
           <div className="col-span-2"><dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Address</dt><dd className="mt-0.5 font-medium text-ink">{person.address}</dd></div>
           <div><dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Linked FIRs</dt><dd className="mt-0.5 font-medium text-ink">{linkedFirs.length} case(s)</dd></div>
         </dl>
+
+        {/* Socio-Demographic Insights */}
+        {person.socioDemographics && (
+          <div className="mt-6 border-t border-line pt-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-navy mb-3">Socio-Demographic Insights</h3>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 text-xs">
+              <div className="rounded-lg bg-canvas p-2.5 border border-line">
+                <span className="text-[10px] uppercase text-slate-400 font-bold">Occupation</span>
+                <p className="font-semibold text-ink mt-0.5">{person.socioDemographics.occupation}</p>
+              </div>
+              <div className="rounded-lg bg-canvas p-2.5 border border-line">
+                <span className="text-[10px] uppercase text-slate-400 font-bold">Education Level</span>
+                <p className="font-semibold text-ink mt-0.5">{person.socioDemographics.educationLevel}</p>
+              </div>
+              <div className="rounded-lg bg-canvas p-2.5 border border-line">
+                <span className="text-[10px] uppercase text-slate-400 font-bold">Income Bracket</span>
+                <p className="font-semibold text-ink mt-0.5">{person.socioDemographics.incomeBracket}</p>
+              </div>
+              <div className="rounded-lg bg-canvas p-2.5 border border-line">
+                <span className="text-[10px] uppercase text-slate-400 font-bold">Origin District</span>
+                <p className="font-semibold text-ink mt-0.5">{person.socioDemographics.originDistrict}</p>
+              </div>
+              <div className="rounded-lg bg-canvas p-2.5 border border-line">
+                <span className="text-[10px] uppercase text-slate-400 font-bold">Family / Relative Links</span>
+                <p className="font-semibold text-ink mt-0.5">{person.socioDemographics.familyLinksCount} Contacts Mapped</p>
+              </div>
+              <div className="rounded-lg bg-canvas p-2.5 border border-line">
+                <span className="text-[10px] uppercase text-slate-400 font-bold">Economic Vulnerability Risk</span>
+                <p className="font-semibold text-red-600 mt-0.5">{person.socioDemographics.economicRiskFactor} Risk</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Behavioral Profiling */}
+        {person.behavioralProfile && (
+          <div className="mt-6 border-t border-line pt-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-navy mb-3">AI Behavioral Profiling & Risk Fingerprint</h3>
+            <div className="space-y-3 text-xs">
+              <div className="rounded-xl bg-canvas p-3.5 border border-line">
+                <p className="font-bold text-navy">Modus Operandi (MO) Signature Pattern:</p>
+                <p className="mt-1 text-slate-700 leading-relaxed">{person.behavioralProfile.modusOperandiSignature}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                <div className="rounded-lg bg-canvas p-3 border border-line">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] uppercase text-slate-400 font-bold">Recidivism Index</span>
+                    <span className="font-bold text-red-600">{person.behavioralProfile.recidivismScore}%</span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                    <div className="h-full bg-red-600 rounded-full" style={{ width: `${person.behavioralProfile.recidivismScore}%` }} />
+                  </div>
+                </div>
+
+                <div className="rounded-lg bg-canvas p-3 border border-line">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] uppercase text-slate-400 font-bold">Accomplice Risk Index</span>
+                    <span className="font-bold text-amber-600">{person.behavioralProfile.accompliceRiskIndex}%</span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 w-full rounded-full bg-slate-200 overflow-hidden">
+                    <div className="h-full bg-amber-500 rounded-full" style={{ width: `${person.behavioralProfile.accompliceRiskIndex}%` }} />
+                  </div>
+                </div>
+
+                <div className="rounded-lg bg-canvas p-3 border border-line">
+                  <span className="text-[10px] uppercase text-slate-400 font-bold">Violence Escalation Propensity</span>
+                  <p className="font-bold text-navy mt-0.5">{person.behavioralProfile.violencePropensity} Violence Risk</p>
+                </div>
+              </div>
+
+              <div className="rounded-xl bg-canvas p-3 border border-line">
+                <p className="font-bold text-navy">Communication Fingerprint:</p>
+                <p className="mt-0.5 text-slate-700">{person.behavioralProfile.communicationFingerprint}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="mt-6 space-y-3">

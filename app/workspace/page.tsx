@@ -28,7 +28,10 @@ const PRIORITY_RAIL: Record<Priority, string> = {
   low: 'before:bg-slate-300',
 }
 
+import { useLanguage } from '@/components/providers/language-provider'
+
 export default function CommandCentrePage() {
+  const { language, t } = useLanguage()
   const [firs, setFirs] = useState<Fir[]>([])
   const [persons, setPersons] = useState<Person[]>([])
   const [aiFindings, setAiFindings] = useState<AiFinding[]>([])
@@ -54,11 +57,18 @@ export default function CommandCentrePage() {
   const actionable = notifications.filter(n => n.actionRequired && !n.read)
 
   const METRICS = [
-    { label: 'Active FIRs', value: firs.filter(f => f.status !== 'closed').length, icon: FileText, href: '/workspace/firs' },
-    { label: 'Pending reviews', value: firs.filter(f => f.status === 'review').length, icon: AlertTriangle, href: '/workspace/firs?status=review' },
-    { label: 'Linked persons', value: persons.length, icon: Users, href: '/workspace/persons' },
-    { label: 'AI findings to verify', value: pendingFindings.length, icon: Sparkles, href: '/workspace/ai-investigator' },
-    { label: 'Priority FIRs', value: priorityFirs.length, icon: AlertTriangle, href: '/workspace/firs?priority=high' },
+    { label: t('dash.activeFirs', 'Active FIRs'), value: firs.filter(f => f.status !== 'closed').length, icon: FileText, href: '/workspace/firs' },
+    { label: t('dash.pendingReviews', 'Pending reviews'), value: firs.filter(f => f.status === 'review').length, icon: AlertTriangle, href: '/workspace/firs?status=review' },
+    { label: t('dash.linkedPersons', 'Linked persons'), value: persons.length, icon: Users, href: '/workspace/persons' },
+    { label: t('dash.aiFindingsToVerify', 'AI findings to verify'), value: pendingFindings.length, icon: Sparkles, href: '/workspace/ai-investigator' },
+    { label: t('dash.priorityFirs', 'Priority FIRs'), value: priorityFirs.length, icon: AlertTriangle, href: '/workspace/firs?priority=high' },
+  ]
+
+  const QUICK_ACTIONS = [
+    { label: language === 'kn' ? 'ಹೊಸ ಎಫ್‌ಐಆರ್ ದಾಖಲಿಸಿ' : 'Create FIR', desc: t('dash.createFirDesc', 'Guided 9-step intake'), href: '/workspace/firs/new', icon: Plus },
+    { label: language === 'kn' ? 'ಎಫ್‌ಐಆರ್ ಶೋಧನೆ' : 'Search FIR', desc: t('dash.searchFirDesc', 'Directory & filters'), href: '/workspace/firs', icon: Search },
+    { label: language === 'kn' ? 'ಸಾಕ್ಷ್ಯ ಜಾಲ ಸಂಶೋಧನೆ' : 'Open Graph', desc: t('dash.openGraphDesc', 'Entity relationships'), href: '/workspace/graph', icon: Network },
+    { label: language === 'kn' ? 'ಎಫ್‌ಐಆರ್ ಪರಿಶೋಧಕ' : 'AI Investigator', desc: t('dash.aiInvestigatorDesc', 'Ask in plain language'), href: '/workspace/ai-investigator', icon: BrainCircuit },
   ]
 
   return (
@@ -100,8 +110,12 @@ export default function CommandCentrePage() {
         {/* Priority panel */}
         <section aria-labelledby="priority-heading" className="xl:col-span-2">
           <div className="flex items-center justify-between">
-            <h2 id="priority-heading" className="font-display text-sm font-bold uppercase tracking-wider text-ink">Priority cases (Live from Supabase)</h2>
-            <Link href="/workspace/firs" className="text-xs font-semibold text-teal-700 hover:text-teal-800">View all FIRs →</Link>
+            <h2 id="priority-heading" className="font-display text-sm font-bold uppercase tracking-wider text-ink">
+              {t('dash.priorityHeading', 'Priority cases (Live from Supabase)')}
+            </h2>
+            <Link href="/workspace/firs" className="text-xs font-semibold text-teal-700 hover:text-teal-800">
+              {t('dash.viewAllFirs', 'View all FIRs →')}
+            </Link>
           </div>
           <div className="mt-3 space-y-3">
             {priorityFirs.map(fir => (
@@ -117,12 +131,12 @@ export default function CommandCentrePage() {
                   <span className="font-mono text-xs font-bold text-steel">FIR {fir.number}</span>
                   <PriorityBadge priority={fir.priority} />
                   <StatusBadge status={fir.status} />
-                  <span className="ml-auto text-xs text-ink-muted">Updated {relativeTime(fir.updatedAt)}</span>
+                  <span className="ml-auto text-xs text-ink-muted">{relativeTime(fir.updatedAt)}</span>
                 </div>
                 <h3 className="mt-2 font-display text-[15px] font-semibold text-ink">{fir.title}</h3>
                 <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-slate-600">{fir.summary}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                  <span className="ml-auto text-xs text-ink-muted">{fir.station} · {fir.officer} · {fir.relationshipCount} relationships</span>
+                  <span className="ml-auto text-xs text-ink-muted">{fir.station} · {fir.officer} · {fir.relationshipCount} {language === 'kn' ? 'ಸಂಪರ್ಕಗಳು' : 'relationships'}</span>
                 </div>
               </Link>
             ))}
@@ -130,8 +144,12 @@ export default function CommandCentrePage() {
 
           {/* AI verification queue */}
           <div className="mt-8 flex items-center justify-between">
-            <h2 className="font-display text-sm font-bold uppercase tracking-wider text-ink">AI verification queue</h2>
-            <Link href="/workspace/ai-investigator" className="text-xs font-semibold text-teal-700 hover:text-teal-800">Open AI Investigator →</Link>
+            <h2 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
+              {t('dash.aiVerificationQueue', 'AI verification queue')}
+            </h2>
+            <Link href="/workspace/ai-investigator" className="text-xs font-semibold text-teal-700 hover:text-teal-800">
+              {t('dash.openAiInvestigator', 'Open AI Investigator →')}
+            </Link>
           </div>
           <div className="mt-3 space-y-3">
             {pendingFindings.map(f => (
@@ -145,13 +163,13 @@ export default function CommandCentrePage() {
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <ConfidenceMeter value={f.confidence} />
-                    <span className="text-xs text-ink-muted">{f.citations.length} citations</span>
+                    <span className="text-xs text-ink-muted">{f.citations.length} {language === 'kn' ? 'ಉಲ್ಲೇಖಗಳು' : 'citations'}</span>
                   </div>
                   <Link
                     href="/workspace/ai-investigator"
                     className="inline-flex items-center gap-1 rounded-lg bg-navy px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-navy-700"
                   >
-                    Review & verify <ArrowUpRight className="size-3.5" aria-hidden />
+                    {t('dash.reviewVerify', 'Review & verify')} <ArrowUpRight className="size-3.5" aria-hidden />
                   </Link>
                 </div>
               </div>
@@ -163,11 +181,13 @@ export default function CommandCentrePage() {
         <section aria-label="Notifications and alerts" className="space-y-6">
           <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
             <div className="flex items-center justify-between">
-              <h2 className="font-display text-sm font-bold uppercase tracking-wider text-ink">Action required</h2>
+              <h2 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
+                {t('dash.actionRequired', 'Action required')}
+              </h2>
               <Link href="/workspace/notifications" className="text-xs font-semibold text-teal-700 hover:text-teal-800">All →</Link>
             </div>
             <div className="mt-3 space-y-3">
-              {actionable.length === 0 && <p className="py-4 text-center text-xs text-ink-muted">No pending actions.</p>}
+              {actionable.length === 0 && <p className="py-4 text-center text-xs text-ink-muted">{language === 'kn' ? 'ಯಾವುದೇ ಬಾಕಿ ಕ್ರಮಗಳಿಲ್ಲ.' : 'No pending actions.'}</p>}
               {actionable.map(n => (
                 <Link key={n.id} href="/workspace/notifications" className="block rounded-lg border border-line bg-canvas p-3 transition-colors hover:border-teal-300">
                   <p className="text-[13px] font-semibold leading-snug text-ink">{n.title}</p>

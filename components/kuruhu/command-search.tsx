@@ -6,11 +6,14 @@ import { Car, FileText, MapPin, Search, User, X } from 'lucide-react'
 import { fetchFirs, fetchPersons, fetchVehicles } from '@/services/api-client'
 import { cn } from '@/lib/utils'
 
+import { useLanguage } from '@/components/providers/language-provider'
+
 type Result = { key: string; kind: 'FIR' | 'Person' | 'Vehicle' | 'Location'; title: string; subtitle: string; href: string }
 
 const KIND_ICON = { FIR: FileText, Person: User, Vehicle: Car, Location: MapPin }
 
 export function CommandSearch() {
+  const { language, t } = useLanguage()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [active, setActive] = useState(0)
@@ -71,7 +74,7 @@ export function CommandSearch() {
       >
         <span className="flex items-center gap-2">
           <Search className="size-3.5 text-slate-400" aria-hidden />
-          <span>Search FIR, person, vehicle...</span>
+          <span>{t('header.search', 'Search FIR, person, vehicle...')}</span>
         </span>
         <kbd className="rounded border border-line bg-white px-1.5 py-0.5 font-mono text-[10px] text-ink-muted">⌘K</kbd>
       </button>
@@ -85,7 +88,7 @@ export function CommandSearch() {
                 ref={inputRef}
                 value={query}
                 onChange={e => { setQuery(e.target.value); setActive(0) }}
-                placeholder="Search live Supabase database..."
+                placeholder={language === 'kn' ? 'ಎಫ್‌ಐಆರ್, ಶಂಕಿತರು, ವಾಹನ ಶೋಧನೆ…' : 'Search live Supabase database...'}
                 className="h-9 flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-slate-400"
               />
               <button onClick={() => setOpen(false)} className="rounded-md p-1 text-slate-400 hover:bg-canvas hover:text-ink">
@@ -94,7 +97,7 @@ export function CommandSearch() {
             </div>
 
             <div className="max-h-80 overflow-y-auto p-2">
-              {results.length === 0 && <p className="p-4 text-center text-xs text-ink-muted">No matching database records found.</p>}
+              {results.length === 0 && <p className="p-4 text-center text-xs text-ink-muted">{language === 'kn' ? 'ಯಾವುದೇ ಮಾಹಿತಿಗಳು ಸಿಕ್ಕಿಲ್ಲ.' : 'No matching database records found.'}</p>}
               {results.map((r, i) => {
                 const Icon = KIND_ICON[r.kind]
                 return (

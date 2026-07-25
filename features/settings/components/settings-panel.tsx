@@ -1,13 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { Bell, Laptop, Lock, Palette, ScrollText, Smartphone, User } from 'lucide-react'
+import { Bell, Globe, Laptop, Lock, Palette, ScrollText, Smartphone, User } from 'lucide-react'
 import { PageHeader } from '@/components/kuruhu/page-header'
 import { useAuth } from '@/features/auth/components/auth-provider'
+import { useLanguage } from '@/components/providers/language-provider'
 import { cn } from '@/lib/utils'
 
 const SECTIONS = [
   { key: 'profile', label: 'Profile', icon: User },
+  { key: 'language', label: 'Language & Locale', icon: Globe },
   { key: 'notifications', label: 'Notifications', icon: Bell },
   { key: 'security', label: 'Security', icon: Lock },
   { key: 'appearance', label: 'Appearance', icon: Palette },
@@ -40,6 +42,7 @@ function Toggle({ label, desc, defaultOn = true }: { label: string; desc: string
 
 export function SettingsPanel() {
   const { user } = useAuth()
+  const { language, setLanguage, t } = useLanguage()
   const [section, setSection] = useState<SectionKey>('profile')
 
   const displayName = user?.display_name || 'Investigating Officer'
@@ -58,7 +61,14 @@ export function SettingsPanel() {
 
   return (
     <>
-      <PageHeader title="Settings" description="Profile, security, appearance, and audit preferences for your account." />
+      <PageHeader
+        title={t('nav.settings', 'Settings')}
+        description={
+          language === 'kn'
+            ? 'ನಿಮ್ಮ ಖಾತೆಯ ಪ್ರೊಫೈಲ್, ಭಾಷೆ (Language), ಭದ್ರತೆ ಮತ್ತು ಆಡಿಟ್ ಆದ್ಯತೆಗಳು.'
+            : 'Profile, security, language, appearance, and audit preferences for your account.'
+        }
+      />
 
       <div className="grid gap-6 lg:grid-cols-4">
         <nav aria-label="Settings sections" className="space-y-0.5">
@@ -90,8 +100,47 @@ export function SettingsPanel() {
                   <div><dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Station / Unit</dt><dd className="mt-0.5 font-medium text-ink">{station}</dd></div>
                   <div><dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">District</dt><dd className="mt-0.5 font-medium text-ink">{district}</dd></div>
                   <div><dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Role Context</dt><dd className="mt-0.5 font-medium capitalize text-ink">{user?.role || 'officer'}</dd></div>
-                  <div><dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Language</dt><dd className="mt-0.5 font-medium text-ink">English</dd></div>
+                  <div><dt className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">Language</dt><dd className="mt-0.5 font-medium text-ink">{language === 'kn' ? 'ಕನ್ನಡ — Kannada' : 'English'}</dd></div>
                 </dl>
+              </>
+            )}
+
+            {section === 'language' && (
+              <>
+                <h2 className="text-lg font-bold text-ink">{t('settings.langTitle', 'Dashboard Platform Language')}</h2>
+                <p className="mt-1 text-xs text-ink-muted">
+                  {t('settings.langDesc', 'Toggle the entire KURUHU PRAMAAN workspace interface between English and Kannada.')}
+                </p>
+
+                <div className="mt-6 grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => setLanguage('en')}
+                    className={cn(
+                      'flex flex-col items-center justify-center rounded-xl p-5 border transition-all text-center',
+                      language === 'en'
+                        ? 'border-navy bg-navy/5 ring-2 ring-navy'
+                        : 'border-line bg-canvas hover:border-slate-400'
+                    )}
+                  >
+                    <span className="text-2xl font-black text-navy">English</span>
+                    <span className="mt-1 text-xs text-slate-500">Standard English Workspace</span>
+                    {language === 'en' && <span className="mt-2 rounded-full bg-navy px-2.5 py-0.5 text-[10px] font-bold text-white uppercase">Active</span>}
+                  </button>
+
+                  <button
+                    onClick={() => setLanguage('kn')}
+                    className={cn(
+                      'flex flex-col items-center justify-center rounded-xl p-5 border transition-all text-center',
+                      language === 'kn'
+                        ? 'border-cyan-600 bg-cyan/10 ring-2 ring-cyan-600'
+                        : 'border-line bg-canvas hover:border-slate-400'
+                    )}
+                  >
+                    <span className="text-2xl font-black text-navy">ಕನ್ನಡ</span>
+                    <span className="mt-1 text-xs text-slate-500">Kannada Regional Workspace</span>
+                    {language === 'kn' && <span className="mt-2 rounded-full bg-cyan-600 px-2.5 py-0.5 text-[10px] font-bold text-white uppercase">ಸಕ್ರಿಯ (Active)</span>}
+                  </button>
+                </div>
               </>
             )}
 
