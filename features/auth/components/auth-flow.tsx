@@ -57,7 +57,7 @@ export function AuthFlow() {
       }
       return
     }
-    if (step === 4) { router.push('/workspace'); return }
+    if (step === 4) { router.push('/workspace/'); return }
     setStep(s => s + 1)
   }
 

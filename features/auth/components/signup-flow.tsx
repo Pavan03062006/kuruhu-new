@@ -35,7 +35,7 @@ export function SignupFlow() {
     try {
       const result = await signup({ email, password, district, language })
       if (result.requiresEmailVerification) setVerificationSent(true)
-      else router.replace('/workspace')
+      else router.replace('/workspace/')
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : 'Could not create your account'
       setError(
