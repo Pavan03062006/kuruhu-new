@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from 'next/server'
 let cachedToken: string | null = null
 let tokenExpiresAt = 0 // Unix ms
 
-const CLIENT_ID     = process.env.CATALYST_CLIENT_ID     || '1000.E1GX0FYJVGZ1ZZ8YVGSLJ5CG42Z95Y'
-const CLIENT_SECRET = process.env.CATALYST_CLIENT_SECRET || '79e5a9ad0030e67d144087501004b7067cc1263c6e'
-const REFRESH_TOKEN = process.env.CATALYST_TTS_REFRESH_TOKEN || '1000.a863c74ab8107181f1eb95464e5072df.8aa083546f6da3c17e3f85d31fea092b'
+const CLIENT_ID     = process.env.CATALYST_CLIENT_ID     || ''
+const CLIENT_SECRET = process.env.CATALYST_CLIENT_SECRET || ''
+const REFRESH_TOKEN = process.env.CATALYST_TTS_REFRESH_TOKEN || ''
 const ORG_ID        = process.env.CATALYST_ORG           || '60078981735'
 const TTS_ENDPOINT  = 'https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tts/synthesize'
 const TOKEN_URL     = 'https://accounts.zoho.in/oauth/v2/token'
