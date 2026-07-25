@@ -304,7 +304,7 @@ export function AiChatbot() {
       lang: lang === 'kn' ? 'Kannada' : 'English',
     }
 
-    // 1. Try server API route `/api/chat` with Groq
+    // 1. Try server API route `/api/chat` with Zoho Catalyst ML
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
@@ -323,9 +323,9 @@ export function AiChatbot() {
                 id: Date.now().toString(),
                 role: 'assistant',
                 content: data.reply,
-                modelUsed: data.modelUsed || 'llama-3.1-8b-instant',
+                modelUsed: data.modelUsed || 'PRAMAAN AI (Zoho Catalyst ML)',
                 confidence: data.confidence || 0.94,
-                auditHash: data.auditHash || `AUDIT-GRQ-${Math.floor(100000 + Math.random() * 900000)}`,
+                auditHash: data.auditHash || `AUDIT-CAT-${Math.floor(100000 + Math.random() * 900000)}`,
               },
             ])
             setLoading(false)
@@ -335,56 +335,6 @@ export function AiChatbot() {
       }
     } catch {
       // Offline fallback
-    }
-
-    // 2. Direct Groq fallback if NEXT_PUBLIC_GROQ_API_KEY is available client-side
-    const clientApiKey = process.env.NEXT_PUBLIC_GROQ_API_KEY
-    if (clientApiKey) {
-      try {
-        const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${clientApiKey}`,
-          },
-          body: JSON.stringify({
-            model: 'llama-3.1-8b-instant',
-            messages: [
-              {
-                role: 'system',
-                content: `You are PRAMAAN AI Assistant for Karnataka State Police. Respond in ${
-                  lang === 'kn' ? 'Kannada' : 'English'
-                }. Context page: ${pathname}. Keep answers authoritative and under 180 words.`,
-              },
-              ...history.slice(-10),
-            ],
-            max_tokens: 350,
-            temperature: 0.3,
-          }),
-        })
-
-        if (groqRes.ok) {
-          const groqData = await groqRes.json()
-          const reply = groqData.choices?.[0]?.message?.content
-          if (reply) {
-            setMessages(prev => [
-              ...prev,
-              {
-                id: Date.now().toString(),
-                role: 'assistant',
-                content: reply,
-                modelUsed: 'llama-3.1-8b-instant (Direct)',
-                confidence: 0.93,
-                auditHash: `AUDIT-CLI-${Math.floor(100000 + Math.random() * 900000)}`,
-              },
-            ])
-            setLoading(false)
-            return
-          }
-        }
-      } catch {
-        // Fallback
-      }
     }
 
     // 3. Fallback

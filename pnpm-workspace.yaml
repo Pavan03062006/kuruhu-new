@@ -2,5 +2,4 @@ allowBuilds:
   msw: true
   sharp: false
   unrs-resolver: false
-minimumReleaseAgeExclude:
-  - groq-sdk@1.4.0
+

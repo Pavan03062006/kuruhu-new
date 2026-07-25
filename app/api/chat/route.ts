@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Groq from 'groq-sdk'
 
 const SYSTEM_PROMPT = `You are PRAMAAN AI — an advanced intelligence assistant embedded in the KURUHU (ಪ್ರಮಾಣ) police investigation & crime analytics platform used by the Karnataka State Police.
 
@@ -72,9 +71,14 @@ function generateFineTunedIntelligenceReply(query: string, isKn: boolean, page: 
 }
 
 export async function POST(req: NextRequest) {
-  const apiKey =
-    process.env.GROQ_API_KEY ||
-    process.env.NEXT_PUBLIC_GROQ_API_KEY ||
+  const mlEndpoint =
+    process.env.CATALYST_ML_ENDPOINT ||
+    process.env.NEXT_PUBLIC_CATALYST_ML_ENDPOINT ||
+    ''
+
+  const mlAuthToken =
+    process.env.CATALYST_ML_AUTH_TOKEN ||
+    process.env.NEXT_PUBLIC_CATALYST_ML_AUTH_TOKEN ||
     req.headers.get('x-api-key') ||
     ''
 
@@ -94,52 +98,50 @@ export async function POST(req: NextRequest) {
   const isKn = contextInfo.lang === 'kn' || /[\u0C80-\u0CFF]/.test(lastUserMsg)
   const page = contextInfo.page || '/workspace'
 
-  if (apiKey) {
+  if (mlEndpoint) {
     try {
-      const groq = new Groq({ apiKey })
       const contextPrompt = `[ACTIVE USER CONTEXT: Page="${page}", Role="${contextInfo.role || 'Police Officer'}", Language="${contextInfo.lang || 'English'}"]`
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      }
+      if (mlAuthToken) {
+        headers['Authorization'] = `Bearer ${mlAuthToken}`
+      }
 
-      // Try model fallback chain: llama-3.3-70b-versatile -> llama-3.1-8b-instant -> gemma2-9b-it -> llama3-70b-8192
-      const candidateModels = [
-        'llama-3.3-70b-versatile',
-        'llama-3.1-8b-instant',
-        'gemma2-9b-it',
-        'llama3-70b-8192',
-        'llama3-8b-8192',
-      ]
+      const response = await fetch(mlEndpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: `${SYSTEM_PROMPT}\n\n${contextPrompt}` },
+            ...messages.slice(-10),
+          ],
+          temperature: 0.3,
+          max_tokens: 450,
+        }),
+      })
 
-      let completion
-      let modelUsed = candidateModels[0]
+      if (response.ok) {
+        const data = await response.json()
+        const reply = 
+          data.choices?.[0]?.message?.content || 
+          data.reply || 
+          data.response || 
+          data.output || 
+          (typeof data === 'string' ? data : '')
 
-      for (const model of candidateModels) {
-        try {
-          completion = await groq.chat.completions.create({
-            model,
-            messages: [
-              { role: 'system', content: `${SYSTEM_PROMPT}\n\n${contextPrompt}` },
-              ...messages.slice(-10),
-            ],
-            max_tokens: 450,
-            temperature: 0.3,
+        if (reply) {
+          return NextResponse.json({
+            reply,
+            modelUsed: 'PRAMAAN AI (Zoho Catalyst ML)',
+            confidence: 0.96,
+            auditHash: `AUDIT-CAT-${Math.floor(100000 + Math.random() * 900000)}`,
           })
-          modelUsed = model
-          break
-        } catch {
-          // try next model
         }
       }
-
-      if (completion && completion.choices[0]?.message?.content) {
-        const reply = completion.choices[0].message.content
-        return NextResponse.json({
-          reply,
-          modelUsed: `PRAMAAN AI (${modelUsed})`,
-          confidence: 0.96,
-          auditHash: `AUDIT-PRM-${Math.floor(100000 + Math.random() * 900000)}`,
-        })
-      }
-    } catch {
-      // Fall through to NLU resolver
+    } catch (e) {
+      console.error('Error calling Zoho Catalyst ML endpoint:', e)
     }
   }
 
