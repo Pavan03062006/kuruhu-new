@@ -148,22 +148,10 @@ export function AiChatbot() {
     const cleanText = text.replace(/[*#_`[\]()]/g, '')
 
     if (lang === 'kn') {
-      // Use Zoho Catalyst TTS proxy endpoint with POST
       setIsSpeaking(true);
-      fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: cleanText,
-          speaker: 'Anu',
-          pitch: 'moderate',
-          speed: 'moderate',
-          emotion: 'neutral'
-        })
-      })
-      .then(async (res) => {
-        if (!res.ok) throw new Error('TTS API error');
-        const blob = await res.blob();
+      const clientToken = process.env.NEXT_PUBLIC_CATALYST_TTS_TOKEN || '';
+      
+      const playAudioBlob = (blob: Blob) => {
         const audioUrl = URL.createObjectURL(blob);
         const audio = new Audio(audioUrl);
         
@@ -183,11 +171,60 @@ export function AiChatbot() {
           console.error('Failed to play audio:', err);
           fallbackBrowserSpeech(cleanText);
         });
-      })
-      .catch((err) => {
-        console.error('Error calling Zoho Catalyst TTS:', err);
-        fallbackBrowserSpeech(cleanText);
-      });
+      };
+
+      if (clientToken) {
+        // Direct client-side call to Zoho Catalyst TTS
+        fetch('https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tts/synthesize', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'CATALYST-ORG': '60078981735',
+            'Authorization': `Zoho-oauthtoken ${clientToken}`
+          },
+          body: JSON.stringify({
+            text: cleanText,
+            language: 'kn',
+            speaker: 'Anu',
+            pitch: 'moderate',
+            speed: 'moderate',
+            emotion: 'neutral'
+          })
+        })
+        .then(async (res) => {
+          if (!res.ok) throw new Error('Direct TTS API error');
+          const blob = await res.blob();
+          if (blob.size === 0) throw new Error('Empty direct audio blob');
+          playAudioBlob(blob);
+        })
+        .catch((err) => {
+          console.error('Direct Zoho Catalyst TTS failed:', err);
+          fallbackBrowserSpeech(cleanText);
+        });
+      } else {
+        // Fallback to proxy route
+        fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: cleanText,
+            speaker: 'Anu',
+            pitch: 'moderate',
+            speed: 'moderate',
+            emotion: 'neutral'
+          })
+        })
+        .then(async (res) => {
+          if (!res.ok) throw new Error('TTS API error');
+          const blob = await res.blob();
+          if (blob.size === 0) throw new Error('Empty proxy audio blob');
+          playAudioBlob(blob);
+        })
+        .catch((err) => {
+          console.error('Proxy Zoho Catalyst TTS failed:', err);
+          fallbackBrowserSpeech(cleanText);
+        });
+      }
     } else {
       fallbackBrowserSpeech(cleanText)
     }
