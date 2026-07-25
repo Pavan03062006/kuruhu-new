@@ -291,33 +291,6 @@ export function AiChatbot() {
     }, 500)
   }
 
-  const getFallbackResponse = (query: string): string => {
-    const q = query.toLowerCase()
-
-    if (lang === 'kn') {
-      if (q.includes('ಹೋಟ್ಸ್ಪಾಟ್') || q.includes('ತಾಣ') || q.includes('hotspot') || q.includes('crime') || q.includes('ಅಪರಾಧ')) {
-        return 'ನಮಸ್ಕಾರ ಸಾಬ್! ಬೆಂಗಳೂರಿನ **ಅಪರಾಧ ತಾಣಗಳ (Hotspots)** ಪಟ್ಟಿ ಇಲ್ಲಿದೆ ನೋಡಿ:\n- **ಮಡಿವಾಳ ಮಾರುಕಟ್ಟೆ & ಹೊಸೂರು ರಸ್ತೆ ಜಂಕ್ಷನ್**: ರಾತ್ರಿ 1:00 ರಿಂದ 4:30 ರವರೆಗೆ ಬೈಕ್ ಕಳ್ಳತನ ಮತ್ತು ಸರಗಳ್ಳತನದ ಅಪಾಯ ಹೆಚ್ಚಿದೆ ಸಾಬ್.\n- **ಕೆ.ಆರ್. ಮಾರುಕಟ್ಟೆ**: ಸಂಜೆ ವ್ಯಾಪಾರದ ವೇಳೆಯಲ್ಲಿ ಜೇಬುಗಳ್ಳತನ ಪ್ರಕರಣಗಳು ದಾಖಲಾಗಿವೆ.'
-      }
-      if (q.includes('ಗಸ್ತು') || q.includes('patrol') || q.includes('ಮಾರ್ಗ')) {
-        return 'ಅಧಿಕಾರಿಗಳೇ, **ಪೂರ್ವಭಾವಿ ಗಸ್ತು ಮಾರ್ಗ (Patrol Route)** ಸಿದ್ಧವಾಗಿದೆ:\n- **ಆಲ್ಫಾ ಗಸ್ತು ತಂಡ**: ಬಿಟಿಎಂ ಲೇಔಟ್ ಮತ್ತು ಮಡಿವಾಳ ಮಾರುಕಟ್ಟೆ ವಲಯ. ರಾತ್ರಿ 1 ರಿಂದ 5 ಗಂಟೆಯವರೆಗೆ ಸಕ್ರಿಯ ಗಸ್ತು ಅಗತ್ಯವಿದೆ.'
-      }
-      return 'ನಮಸ್ಕಾರ ಸಾಬ್! ನಾನು **ಪ್ರಮಾಣ ಎಐ ಸಹಾಯಕ**. ನಾನು ಎಫ್‌ಐಆರ್ ದಾಖಲಾತಿ, ಶಂಕಿತ ಅಪರಾಧಿಗಳ ಜಾಲ ನಕ್ಷೆ, ಅಪರಾಧ ತಾಣಗಳ ವಿಶ್ಲೇಷಣೆ ಮತ್ತು ಗಸ್ತು ಮಾರ್ಗ ನಿರ್ವಹಣೆಯಲ್ಲಿ ಸಹಾಯ ಮಾಡುತ್ತೇನೆ. ಏನು ಮಾಹಿತಿ ಬೇಕು ಸಾಬ್?'
-    }
-
-    if (q.includes('hotspot') || q.includes('trend') || q.includes('pattern') || q.includes('crime')) {
-      return 'Crime Pattern & Hotspot Intelligence:\n- **Critical Hotspot**: Madiwala Market & Hosur Road (Peak Hours: 01:00 AM - 04:30 AM). Dominant MO: Midnight Two-Wheeler Theft.\n- **Syndicate Warning**: Inter-district theft network active across Bengaluru Urban & Mandya.'
-    }
-
-    if (q.includes('patrol') || q.includes('prevent') || q.includes('proactive') || q.includes('route')) {
-      return 'Proactive Crime Prevention Patrol Route:\n- **Alpha Sector Patrol**: Covers BTM 2nd Stage & Madiwala Junction. Optimal patrol window: 01:00 AM – 05:00 AM.\n- Recommended Action: Issue Section 107 BNSS / CrPC notices to high-risk repeat offenders.'
-    }
-
-    if (q.includes('person') || q.includes('network') || q.includes('suspect') || q.includes('graph')) {
-      return 'Criminal Network & Behavioral Profiling:\n- **Primary Accused**: Ravi Kumar S (P-1001) — Recidivism Score: 84%, High Accomplice Risk Index.\n- **Network Connections**: Co-accused link with Faisal Ahmed (P-1002); 14 contacts mapped in Entity Graph.'
-    }
-
-    return 'I am **PRAMAAN AI** — your intelligence assistant for the Karnataka State Police. I assist with Crime Pattern Discovery, Criminal Network Analysis, Socio-Demographic Insights, Behavioral Profiling, and Proactive Crime Prevention.'
-  }
 
   const sendMessage = async (text?: string) => {
     const content = (text ?? input).trim()
@@ -338,52 +311,57 @@ export function AiChatbot() {
       lang: lang === 'kn' ? 'Kannada' : 'English',
     }
 
-    // 1. Try server API route `/api/chat` with Zoho Catalyst ML
+    const chatFunctionUrl = process.env.NEXT_PUBLIC_CHAT_FUNCTION_URL || ''
+
+    if (!chatFunctionUrl) {
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: '⚠️ AI service not configured. Set `NEXT_PUBLIC_CHAT_FUNCTION_URL` in the build environment.',
+        error: true,
+      }])
+      setLoading(false)
+      return
+    }
+
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch(chatFunctionUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: history, context: contextPayload }),
       })
 
       if (res.ok) {
-        const contentType = res.headers.get('content-type')
-        if (contentType && contentType.includes('application/json')) {
-          const data = await res.json()
-          if (data.reply) {
-            setMessages(prev => [
-              ...prev,
-              {
-                id: Date.now().toString(),
-                role: 'assistant',
-                content: data.reply,
-                modelUsed: data.modelUsed || 'PRAMAAN AI (Zoho Catalyst ML)',
-                confidence: data.confidence || 0.94,
-                auditHash: data.auditHash || `AUDIT-CAT-${Math.floor(100000 + Math.random() * 900000)}`,
-              },
-            ])
-            setLoading(false)
-            return
-          }
+        const data = await res.json()
+        if (data.reply) {
+          setMessages(prev => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              role: 'assistant',
+              content: data.reply,
+              modelUsed: data.modelUsed || 'PRAMAAN AI (Zoho Catalyst ML)',
+              confidence: data.confidence || 0.94,
+              auditHash: data.auditHash || `AUDIT-CAT-${Math.floor(100000 + Math.random() * 900000)}`,
+            },
+          ])
+          setLoading(false)
+          return
         }
       }
-    } catch {
-      // Offline fallback
-    }
 
-    // 3. Fallback
-    const fallbackText = getFallbackResponse(content)
-    setMessages(prev => [
-      ...prev,
-      {
+      const errBody = await res.text().catch(() => '')
+      throw new Error(`AI service error ${res.status}: ${errBody}`)
+    } catch (err) {
+      console.error('Chat function error:', err)
+      setMessages(prev => [...prev, {
         id: Date.now().toString(),
         role: 'assistant',
-        content: fallbackText,
-        modelUsed: 'PRAMAAN Local Intelligence Engine',
-        confidence: 0.88,
-        auditHash: `AUDIT-LOC-${Math.floor(100000 + Math.random() * 900000)}`,
-      },
-    ])
+        content: `⚠️ Unable to reach PRAMAAN AI: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        error: true,
+      }])
+    }
+
     setLoading(false)
   }
 

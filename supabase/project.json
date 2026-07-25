@@ -1,7 +1,0 @@
-{
-  "name": "pramaan",
-  "project_ref": "axxxkyrtmubtqtgjwfss",
-  "region": "ap-south-1",
-  "api_url": "https://axxxkyrtmubtqtgjwfss.supabase.co",
-  "architecture": "managed-postgres-behind-fastapi"
-}

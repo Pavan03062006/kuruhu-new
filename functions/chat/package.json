@@ -1,0 +1,7 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "PRAMAAN AI chat proxy to Zoho Catalyst ML",
+  "main": "index.js",
+  "scripts": { "start": "node index.js" }
+}
