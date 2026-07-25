@@ -1,3 +1,0 @@
-:HL["/_next/static/chunks/0ugt7pxsd93yb.css","style"]
-:HC["/",""]
-0:{"tree":{"name":"","param":null,"prefetchHints":24,"slots":{"children":{"name":"workspace","param":null,"prefetchHints":4,"slots":{"children":{"name":"firs","param":null,"prefetchHints":0,"slots":{"children":{"name":"id","param":{"type":"d","key":"F-2244","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}}}},"staleTime":300,"buildId":"-jJL8KAZEwrxw3vz46X-J"}
