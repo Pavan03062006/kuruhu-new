@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'export',
   distDir: 'build',
-  trailingSlash: false,
+  trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
   },
