@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002Fworkspace\u002Ffirs\u002F[id]","\u002Fworkspace\u002Fpersons\u002F[id]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()
