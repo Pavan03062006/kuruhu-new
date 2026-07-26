@@ -166,9 +166,8 @@ export const authApi = {
       }
     } catch {}
 
-    // Fallback: Default active officer session so workspace is always accessible
     return buildDefaultUser({
-      identifier: 'officer@pramaan.gov.in',
+      identifier: 'officer@ksp.gov.in',
       role: 'officer',
       district: 'Bengaluru (Urban)',
       displayName: 'Insp. Meera Kulkarni',
