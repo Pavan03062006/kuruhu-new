@@ -145,7 +145,7 @@ export function AiChatbot() {
 
     // Map app language to Zoho TTS language code
     const zohoLang = lang === 'kn' ? 'kn' : 'en'
-    const speaker  = lang === 'kn' ? 'Anu'  : 'Mary'
+    const speaker = lang === 'kn' ? 'Anu' : 'Mary'
 
     const ttsFunctionUrl = process.env.NEXT_PUBLIC_TTS_FUNCTION_URL || ''
     if (!ttsFunctionUrl) {
@@ -265,15 +265,15 @@ export function AiChatbot() {
         <div class="chat-box">
           <h3 style="font-size: 14px; margin-top: 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Transcript Log</h3>
           ${messages
-            .map(
-              m => `
+        .map(
+          m => `
             <div class="msg ${m.role === 'user' ? 'user-msg' : 'ai-msg'}">
               <div class="msg-sender">${m.role === 'user' ? officerName : 'PRAMAAN AI ASSISTANT'}</div>
               <div>${m.content.replace(/\n/g, '<br/>')}</div>
             </div>
           `
-            )
-            .join('')}
+        )
+        .join('')}
         </div>
 
         <div class="footer">
@@ -545,8 +545,8 @@ export function AiChatbot() {
                     msg.role === 'user'
                       ? 'bg-navy text-white'
                       : msg.error
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-cyan-100 text-cyan-900'
+                        ? 'bg-red-100 text-red-600'
+                        : 'bg-cyan-100 text-cyan-900'
                   )}
                 >
                   {msg.role === 'user' ? (
@@ -565,8 +565,8 @@ export function AiChatbot() {
                     msg.role === 'user'
                       ? 'rounded-tr-sm bg-navy text-white'
                       : msg.error
-                      ? 'rounded-tl-sm border border-red-200 bg-red-50 text-red-700'
-                      : 'rounded-tl-sm border border-line bg-canvas text-ink'
+                        ? 'rounded-tl-sm border border-red-200 bg-red-50 text-red-700'
+                        : 'rounded-tl-sm border border-line bg-canvas text-ink'
                   )}
                 >
                   <div dangerouslySetInnerHTML={{ __html: renderContent(msg.content) }} />
