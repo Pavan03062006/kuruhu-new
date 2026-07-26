@@ -52,14 +52,14 @@ export function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
   }
 
   const NAV = [
-    { label: t('nav.dashboard', 'Dashboard'), href: '/workspace', icon: LayoutGrid, exact: true, roles: ['admin', 'officer', 'civilian'] },
-    { label: t('nav.firs', 'FIR Directory'), href: '/workspace/firs', icon: FileText, roles: ['admin', 'officer', 'civilian'] },
-    { label: t('nav.persons', 'Person Intelligence'), href: '/workspace/persons', icon: Users, roles: ['admin', 'officer'] },
-    { label: t('nav.graph', 'Evidence Graph'), href: '/workspace/graph', icon: Network, roles: ['admin', 'officer'] },
-    { label: t('nav.ai', 'AI Investigator'), href: '/workspace/ai-investigator', icon: BrainCircuit, roles: ['admin', 'officer'] },
-    { label: t('nav.activity', 'Audit & Activity'), href: '/workspace/activity', icon: Activity, roles: ['admin', 'officer'] },
-    { label: t('nav.notifications', 'Notifications'), href: '/workspace/notifications', icon: Bell, roles: ['admin', 'officer', 'civilian'] },
-    { label: t('nav.settings', 'Settings'), href: '/workspace/settings', icon: Settings, roles: ['admin', 'officer', 'civilian'] },
+    { label: t('nav.dashboard', 'Dashboard'), href: '/workspace/', icon: LayoutGrid, exact: true, roles: ['admin', 'officer', 'civilian'] },
+    { label: t('nav.firs', 'FIR Directory'), href: '/workspace/firs/', icon: FileText, roles: ['admin', 'officer', 'civilian'] },
+    { label: t('nav.persons', 'Person Intelligence'), href: '/workspace/persons/', icon: Users, roles: ['admin', 'officer'] },
+    { label: t('nav.graph', 'Evidence Graph'), href: '/workspace/graph/', icon: Network, roles: ['admin', 'officer'] },
+    { label: t('nav.ai', 'AI Investigator'), href: '/workspace/ai-investigator/', icon: BrainCircuit, roles: ['admin', 'officer'] },
+    { label: t('nav.activity', 'Audit & Activity'), href: '/workspace/activity/', icon: Activity, roles: ['admin', 'officer'] },
+    { label: t('nav.notifications', 'Notifications'), href: '/workspace/notifications/', icon: Bell, roles: ['admin', 'officer', 'civilian'] },
+    { label: t('nav.settings', 'Settings'), href: '/workspace/settings/', icon: Settings, roles: ['admin', 'officer', 'civilian'] },
   ].filter(item => item.roles.includes(role))
 
   const navContent = (
@@ -139,7 +139,7 @@ export function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
     <>
       {/* Desktop Sticky Sidebar */}
       <aside className="hidden h-screen sticky top-0 w-60 shrink-0 flex-col border-r border-white/10 bg-navy lg:flex" aria-label="Investigation navigation">
-        <Link href="/workspace" className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
+        <Link href="/workspace/" className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
           <Image src="/ksp-emblem.png" alt="Karnataka State Police" width={36} height={43} className="object-contain" />
           <div>
             <div className="text-base font-bold tracking-[0.18em] text-white">PRAMAAN</div>
@@ -174,7 +174,7 @@ export function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
           aria-label="Mobile navigation drawer"
         >
           <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-            <Link href="/workspace" onClick={onClose} className="flex items-center gap-3">
+            <Link href="/workspace/" onClick={onClose} className="flex items-center gap-3">
               <Image src="/ksp-emblem.png" alt="Karnataka State Police" width={32} height={38} className="object-contain" />
               <div>
                 <div className="text-base font-bold tracking-[0.18em] text-white">PRAMAAN</div>

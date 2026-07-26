@@ -36,7 +36,7 @@ export default function AccessDeniedPage() {
         <button className="inline-flex items-center gap-2 rounded-lg bg-navy px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-navy-700">
           <ShieldAlert className="size-4 text-cyan" aria-hidden /> Request access
         </button>
-        <Link href="/workspace" className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-canvas">
+        <Link href="/workspace/" className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-canvas">
           <ArrowLeft className="size-4" aria-hidden /> Back to Command Centre
         </Link>
       </div>

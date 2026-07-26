@@ -93,7 +93,7 @@ export function PersonDirectory() {
           </div>
         )}
         {results.map(p => (
-          <Link key={p.id} href={`/workspace/persons/${p.id}`} className="rounded-xl border border-line bg-surface p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <Link key={p.id} href={`/workspace/persons/${p.id}/`} className="rounded-xl border border-line bg-surface p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
             <div className="flex items-start gap-3">
               <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-steel text-sm font-bold text-white">
                 {p.name.split(' ').map(w => w[0]).slice(0, 2).join('')}

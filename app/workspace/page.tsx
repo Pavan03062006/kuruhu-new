@@ -57,18 +57,18 @@ export default function CommandCentrePage() {
   const actionable = notifications.filter(n => n.actionRequired && !n.read)
 
   const METRICS = [
-    { label: t('dash.activeFirs', 'Active FIRs'), value: firs.filter(f => f.status !== 'closed').length, icon: FileText, href: '/workspace/firs' },
-    { label: t('dash.pendingReviews', 'Pending reviews'), value: firs.filter(f => f.status === 'review').length, icon: AlertTriangle, href: '/workspace/firs?status=review' },
-    { label: t('dash.linkedPersons', 'Linked persons'), value: persons.length, icon: Users, href: '/workspace/persons' },
-    { label: t('dash.aiFindingsToVerify', 'AI findings to verify'), value: pendingFindings.length, icon: Sparkles, href: '/workspace/ai-investigator' },
-    { label: t('dash.priorityFirs', 'Priority FIRs'), value: priorityFirs.length, icon: AlertTriangle, href: '/workspace/firs?priority=high' },
+    { label: t('dash.activeFirs', 'Active FIRs'), value: firs.filter(f => f.status !== 'closed').length, icon: FileText, href: '/workspace/firs/' },
+    { label: t('dash.pendingReviews', 'Pending reviews'), value: firs.filter(f => f.status === 'review').length, icon: AlertTriangle, href: '/workspace/firs/' },
+    { label: t('dash.linkedPersons', 'Linked persons'), value: persons.length, icon: Users, href: '/workspace/persons/' },
+    { label: t('dash.aiFindingsToVerify', 'AI findings to verify'), value: pendingFindings.length, icon: Sparkles, href: '/workspace/ai-investigator/' },
+    { label: t('dash.priorityFirs', 'Priority FIRs'), value: priorityFirs.length, icon: AlertTriangle, href: '/workspace/firs/' },
   ]
 
   const QUICK_ACTIONS = [
-    { label: language === 'kn' ? 'ಹೊಸ ಎಫ್‌ಐಆರ್ ದಾಖಲಿಸಿ' : 'Create FIR', desc: t('dash.createFirDesc', 'Guided 9-step intake'), href: '/workspace/firs/new', icon: Plus },
-    { label: language === 'kn' ? 'ಎಫ್‌ಐಆರ್ ಶೋಧನೆ' : 'Search FIR', desc: t('dash.searchFirDesc', 'Directory & filters'), href: '/workspace/firs', icon: Search },
-    { label: language === 'kn' ? 'ಸಾಕ್ಷ್ಯ ಜಾಲ ಸಂಶೋಧನೆ' : 'Open Graph', desc: t('dash.openGraphDesc', 'Entity relationships'), href: '/workspace/graph', icon: Network },
-    { label: language === 'kn' ? 'ಎಫ್‌ಐಆರ್ ಪರಿಶೋಧಕ' : 'AI Investigator', desc: t('dash.aiInvestigatorDesc', 'Ask in plain language'), href: '/workspace/ai-investigator', icon: BrainCircuit },
+    { label: language === 'kn' ? 'ಹೊಸ ಎಫ್‌ಐಆರ್ ದಾಖಲಿಸಿ' : 'Create FIR', desc: t('dash.createFirDesc', 'Guided 9-step intake'), href: '/workspace/firs/new/', icon: Plus },
+    { label: language === 'kn' ? 'ಎಫ್‌ಐಆರ್ ಶೋಧನೆ' : 'Search FIR', desc: t('dash.searchFirDesc', 'Directory & filters'), href: '/workspace/firs/', icon: Search },
+    { label: language === 'kn' ? 'ಸಾಕ್ಷ್ಯ ಜಾಲ ಸಂಶೋಧನೆ' : 'Open Graph', desc: t('dash.openGraphDesc', 'Entity relationships'), href: '/workspace/graph/', icon: Network },
+    { label: language === 'kn' ? 'ಎಫ್‌ಐಆರ್ ಪರಿಶೋಧಕ' : 'AI Investigator', desc: t('dash.aiInvestigatorDesc', 'Ask in plain language'), href: '/workspace/ai-investigator/', icon: BrainCircuit },
   ]
 
   return (
@@ -113,7 +113,7 @@ export default function CommandCentrePage() {
             <h2 id="priority-heading" className="font-display text-sm font-bold uppercase tracking-wider text-ink">
               {t('dash.priorityHeading', 'Priority cases (Live from Supabase)')}
             </h2>
-            <Link href="/workspace/firs" className="text-xs font-semibold text-teal-700 hover:text-teal-800">
+            <Link href="/workspace/firs/" className="text-xs font-semibold text-teal-700 hover:text-teal-800">
               {t('dash.viewAllFirs', 'View all FIRs →')}
             </Link>
           </div>
@@ -121,7 +121,7 @@ export default function CommandCentrePage() {
             {priorityFirs.map(fir => (
               <Link
                 key={fir.id}
-                href={`/workspace/firs/${fir.id}`}
+                href={`/workspace/firs/${fir.id}/`}
                 className={cn(
                   'relative block overflow-hidden rounded-xl border border-line bg-surface p-4 pl-5 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md',
                   'before:absolute before:inset-y-0 before:left-0 before:w-1', PRIORITY_RAIL[fir.priority],
@@ -147,7 +147,7 @@ export default function CommandCentrePage() {
             <h2 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
               {t('dash.aiVerificationQueue', 'AI verification queue')}
             </h2>
-            <Link href="/workspace/ai-investigator" className="text-xs font-semibold text-teal-700 hover:text-teal-800">
+            <Link href="/workspace/ai-investigator/" className="text-xs font-semibold text-teal-700 hover:text-teal-800">
               {t('dash.openAiInvestigator', 'Open AI Investigator →')}
             </Link>
           </div>
@@ -166,7 +166,7 @@ export default function CommandCentrePage() {
                     <span className="text-xs text-ink-muted">{f.citations.length} {language === 'kn' ? 'ಉಲ್ಲೇಖಗಳು' : 'citations'}</span>
                   </div>
                   <Link
-                    href="/workspace/ai-investigator"
+                    href="/workspace/ai-investigator/"
                     className="inline-flex items-center gap-1 rounded-lg bg-navy px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-navy-700"
                   >
                     {t('dash.reviewVerify', 'Review & verify')} <ArrowUpRight className="size-3.5" aria-hidden />
@@ -184,12 +184,12 @@ export default function CommandCentrePage() {
               <h2 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
                 {t('dash.actionRequired', 'Action required')}
               </h2>
-              <Link href="/workspace/notifications" className="text-xs font-semibold text-teal-700 hover:text-teal-800">All →</Link>
+              <Link href="/workspace/notifications/" className="text-xs font-semibold text-teal-700 hover:text-teal-800">All →</Link>
             </div>
             <div className="mt-3 space-y-3">
               {actionable.length === 0 && <p className="py-4 text-center text-xs text-ink-muted">{language === 'kn' ? 'ಯಾವುದೇ ಬಾಕಿ ಕ್ರಮಗಳಿಲ್ಲ.' : 'No pending actions.'}</p>}
               {actionable.map(n => (
-                <Link key={n.id} href="/workspace/notifications" className="block rounded-lg border border-line bg-canvas p-3 transition-colors hover:border-teal-300">
+                <Link key={n.id} href="/workspace/notifications/" className="block rounded-lg border border-line bg-canvas p-3 transition-colors hover:border-teal-300">
                   <p className="text-[13px] font-semibold leading-snug text-ink">{n.title}</p>
                   <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-muted">{n.body}</p>
                   <p className="mt-1.5 text-[11px] text-slate-400">{relativeTime(n.time)}</p>

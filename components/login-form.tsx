@@ -65,7 +65,7 @@ export function LoginForm() {
       })
       setSubmitted(true)
       setTimeout(() => {
-        router.push('/workspace')
+        router.push('/workspace/')
       }, 500)
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Login failed')

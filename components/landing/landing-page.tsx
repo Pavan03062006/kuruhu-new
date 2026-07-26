@@ -169,10 +169,10 @@ export function LandingPage() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Link href="/signup" className="inline-flex items-center rounded-lg border border-navy px-4 py-2 text-[13px] font-bold text-navy transition-all hover:-translate-y-px hover:bg-slate-50">
+            <Link href="/signup/" className="inline-flex items-center rounded-lg border border-navy px-4 py-2 text-[13px] font-bold text-navy transition-all hover:-translate-y-px hover:bg-slate-50">
               Sign up
             </Link>
-            <Link href="/auth" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-[13px] font-bold text-white transition-all hover:-translate-y-px hover:bg-navy-700">
+            <Link href="/auth/" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-[13px] font-bold text-white transition-all hover:-translate-y-px hover:bg-navy-700">
               Sign in <ArrowRight className="size-3.5" aria-hidden />
             </Link>
           </div>
@@ -209,10 +209,10 @@ export function LandingPage() {
           </Reveal>
           <Reveal delay={0.24}>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/signup" className="inline-flex items-center rounded-lg border border-navy bg-white px-7 py-3.5 text-sm font-bold text-navy shadow-sm transition-all hover:-translate-y-0.5 hover:bg-slate-50">
+              <Link href="/signup/" className="inline-flex items-center rounded-lg border border-navy bg-white px-7 py-3.5 text-sm font-bold text-navy shadow-sm transition-all hover:-translate-y-0.5 hover:bg-slate-50">
                 Create account
               </Link>
-              <Link href="/auth" className="group inline-flex items-center gap-2 rounded-lg bg-navy px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-navy/20 transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-navy/30">
+              <Link href="/auth/" className="group inline-flex items-center gap-2 rounded-lg bg-navy px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-navy/20 transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-navy/30">
                 Sign in <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
               <a href="#tour" className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-7 py-3.5 text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-slate-50">

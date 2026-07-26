@@ -125,7 +125,7 @@ export function FirCreationWizard() {
           The station house officer will confirm registration and the audit trail has recorded this submission.
         </p>
         <div className="mt-8 flex items-center justify-center gap-3">
-          <Link href="/workspace/firs" className="rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-700">Go to FIR Directory</Link>
+          <Link href="/workspace/firs/" className="rounded-lg bg-navy px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-700">Go to FIR Directory</Link>
           <button onClick={() => { setDraft(EMPTY); setSubmitted(false); setStep(0) }} className="rounded-lg border border-line bg-white px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-canvas">Create another</button>
         </div>
       </div>
@@ -371,7 +371,7 @@ export function FirCreationWizard() {
                 <ArrowLeft className="size-4" aria-hidden /> Back
               </button>
             ) : (
-              <button onClick={() => router.push('/workspace/firs')} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-white hover:text-ink">
+              <button onClick={() => router.push('/workspace/firs/')} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-white hover:text-ink">
                 Cancel
               </button>
             )}

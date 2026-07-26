@@ -57,7 +57,7 @@ export function FirDirectory() {
         title="FIR Directory"
         description="Search, filter, and open first information reports across your division."
         actions={
-          <Link href="/workspace/firs/new" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-navy-700">
+          <Link href="/workspace/firs/new/" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-navy-700">
             <Plus className="size-4" aria-hidden /> Create FIR
           </Link>
         }
@@ -145,7 +145,7 @@ export function FirDirectory() {
             <div className="sticky top-20 rounded-xl border border-line bg-surface p-5 shadow-sm">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-mono text-xs font-bold text-steel">FIR {selected.number}</span>
-                <Link href={`/workspace/firs/${selected.id}`} className="inline-flex items-center gap-1 rounded-lg bg-navy px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-navy-700">
+                <Link href={`/workspace/firs/${selected.id}/`} className="inline-flex items-center gap-1 rounded-lg bg-navy px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-navy-700">
                   Open workspace <ArrowUpRight className="size-3.5" aria-hidden />
                 </Link>
               </div>
@@ -164,7 +164,7 @@ export function FirDirectory() {
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {selected.personIds.length === 0 && <span className="text-xs text-ink-muted">None linked yet.</span>}
                   {selected.personIds.map(pid => (
-                    <EntityChip key={pid} kind="person" label={`Person ${pid}`} href={`/workspace/persons/${pid}`} />
+                    <EntityChip key={pid} kind="person" label={`Person ${pid}`} href={`/workspace/persons/${pid}/`} />
                   ))}
                 </div>
               </div>

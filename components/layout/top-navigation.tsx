@@ -44,7 +44,7 @@ export function TopNavigation({ onMenuToggle }: TopNavigationProps) {
       </button>
 
       {/* Mobile Brand Emblem */}
-      <Link href="/workspace" className="flex items-center gap-2 lg:hidden shrink-0">
+      <Link href="/workspace/" className="flex items-center gap-2 lg:hidden shrink-0">
         <Image src="/ksp-emblem.png" alt="Karnataka State Police" width={28} height={34} className="object-contain" />
         <span className="font-display text-sm font-bold tracking-wider text-navy hidden sm:inline">PRAMAAN</span>
       </Link>
@@ -73,14 +73,14 @@ export function TopNavigation({ onMenuToggle }: TopNavigationProps) {
 
       {user?.role !== 'civilian' && (
         <Link
-          href="/workspace/firs/new"
+          href="/workspace/firs/new/"
           className="hidden items-center gap-1.5 rounded-lg bg-navy px-3.5 py-2 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-navy-700 md:inline-flex shrink-0"
         >
           <Plus className="size-4" aria-hidden /> {language === 'kn' ? 'ಎಫ್‌ಐಆರ್ ಸೃಷ್ಟಿಸಿ' : 'Create FIR'}
         </Link>
       )}
 
-      <Link href="/workspace/notifications" aria-label={`Notifications, ${unread} unread`} className="relative rounded-lg border border-line p-2 text-slate-500 transition-colors hover:bg-canvas hover:text-ink shrink-0">
+      <Link href="/workspace/notifications/" aria-label={`Notifications, ${unread} unread`} className="relative rounded-lg border border-line p-2 text-slate-500 transition-colors hover:bg-canvas hover:text-ink shrink-0">
         <Bell className="size-4" aria-hidden />
         {unread > 0 && <span className="absolute -right-1 -top-1 inline-flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white">{unread}</span>}
       </Link>

@@ -28,9 +28,9 @@ export function CommandSearch() {
       fetchVehicles().catch(() => []),
     ]).then(([firs, persons, vehicles]) => {
       const items: Result[] = [
-        ...firs.map(f => ({ key: f.id, kind: 'FIR' as const, title: `FIR ${f.number} — ${f.title}`, subtitle: `${f.station} · ${f.officer}`, href: `/workspace/firs/${f.id}` })),
-        ...persons.map(p => ({ key: p.id, kind: 'Person' as const, title: p.name + (p.aliases.length ? ` (${p.aliases.join(', ')})` : ''), subtitle: `${p.role} · ${p.address}`, href: `/workspace/persons/${p.id}` })),
-        ...vehicles.map(v => ({ key: v.id, kind: 'Vehicle' as const, title: v.registration, subtitle: `${v.color} ${v.make}`, href: '/workspace/graph' })),
+        ...firs.map(f => ({ key: f.id, kind: 'FIR' as const, title: `FIR ${f.number} — ${f.title}`, subtitle: `${f.station} · ${f.officer}`, href: `/workspace/firs/${f.id}/` })),
+        ...persons.map(p => ({ key: p.id, kind: 'Person' as const, title: p.name + (p.aliases.length ? ` (${p.aliases.join(', ')})` : ''), subtitle: `${p.role} · ${p.address}`, href: `/workspace/persons/${p.id}/` })),
+        ...vehicles.map(v => ({ key: v.id, kind: 'Vehicle' as const, title: v.registration, subtitle: `${v.color} ${v.make}`, href: '/workspace/graph/' })),
       ]
       setIndex(items)
     })

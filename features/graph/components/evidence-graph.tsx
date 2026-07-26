@@ -100,11 +100,11 @@ export function EvidenceGraph() {
     const rawEdges: GEdge[] = []
 
     firs.forEach(f => {
-      rawNodes.push({ id: f.id, kind: 'fir', label: `FIR ${f.number}`, sub: f.station, href: `/workspace/firs/${f.id}`, x: 0, y: 0 })
+      rawNodes.push({ id: f.id, kind: 'fir', label: `FIR ${f.number}`, sub: f.station, href: `/workspace/firs/${f.id}/`, x: 0, y: 0 })
     })
 
     persons.forEach(p => {
-      rawNodes.push({ id: p.id, kind: 'person', label: p.name, sub: p.role, href: `/workspace/persons/${p.id}`, x: 0, y: 0 })
+      rawNodes.push({ id: p.id, kind: 'person', label: p.name, sub: p.role, href: `/workspace/persons/${p.id}/`, x: 0, y: 0 })
       p.firIds.forEach(fid => {
         rawEdges.push({ source: fid, target: p.id, label: p.role, firRef: fid, verified: true })
       })

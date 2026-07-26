@@ -43,7 +43,7 @@ export function FirWorkspace({ firId }: { firId: string }) {
   return (
     <>
       <div className="mb-5">
-        <Link href="/workspace/firs" className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-muted transition-colors hover:text-ink">
+        <Link href="/workspace/firs/" className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-muted transition-colors hover:text-ink">
           <ArrowLeft className="size-3.5" aria-hidden /> FIR Directory
         </Link>
         <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
@@ -57,10 +57,10 @@ export function FirWorkspace({ firId }: { firId: string }) {
             <p className="mt-1 text-sm text-ink-muted">{fir.station} · {fir.district} · Registered {formatDate(fir.registeredAt)} · {fir.sections.join(' · ')}</p>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/workspace/graph" className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white px-3.5 py-2 text-[13px] font-semibold text-ink transition-colors hover:bg-canvas">
+            <Link href="/workspace/graph/" className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-white px-3.5 py-2 text-[13px] font-semibold text-ink transition-colors hover:bg-canvas">
               <Network className="size-4 text-teal-600" aria-hidden /> View in graph
             </Link>
-            <Link href="/workspace/ai-investigator" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-3.5 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-navy-700">
+            <Link href="/workspace/ai-investigator/" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-3.5 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-navy-700">
               <Sparkles className="size-4 text-cyan" aria-hidden /> Ask AI
             </Link>
           </div>
@@ -81,7 +81,7 @@ export function FirWorkspace({ firId }: { firId: string }) {
             <div className="mt-3 grid gap-3 md:grid-cols-2">
               {linkedPersons.length === 0 && <p className="text-xs text-ink-muted">No persons linked yet.</p>}
               {linkedPersons.map(p => (
-                <Link key={p.id} href={`/workspace/persons/${p.id}`} className="flex items-center gap-3 rounded-lg border border-line bg-canvas p-3 hover:border-teal-300">
+                <Link key={p.id} href={`/workspace/persons/${p.id}/`} className="flex items-center gap-3 rounded-lg border border-line bg-canvas p-3 hover:border-teal-300">
                   <span className="flex size-9 items-center justify-center rounded-full bg-steel text-xs font-bold text-white">
                     {p.name.split(' ').map(w => w[0]).slice(0, 2).join('')}
                   </span>
