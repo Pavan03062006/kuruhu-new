@@ -137,6 +137,7 @@ export function AiChatbot() {
         activeAudio.pause()
         setActiveAudio(null)
       }
+      window.speechSynthesis?.cancel()
       setIsSpeaking(false)
       return
     }
@@ -147,11 +148,35 @@ export function AiChatbot() {
     const zohoLang = lang === 'kn' ? 'kn' : 'en'
     const speaker = lang === 'kn' ? 'Anu' : 'Mary'
 
-    const ttsFunctionUrl = process.env.NEXT_PUBLIC_TTS_FUNCTION_URL || ''
-    if (!ttsFunctionUrl) {
-      console.warn('NEXT_PUBLIC_TTS_FUNCTION_URL not set — TTS disabled')
-      return
+    const speakWithBrowser = () => {
+      if (!('speechSynthesis' in window)) {
+        console.error('No text-to-speech service is available in this browser')
+        setIsSpeaking(false)
+        return
+      }
+
+      const utterance = new SpeechSynthesisUtterance(cleanText)
+      utterance.lang = lang === 'kn' ? 'kn-IN' : 'en-IN'
+      utterance.rate = 1
+      utterance.pitch = 1
+
+      const matchingVoice = window.speechSynthesis
+        .getVoices()
+        .find((voice) => voice.lang.toLowerCase().startsWith(utterance.lang.slice(0, 2).toLowerCase()))
+      if (matchingVoice) utterance.voice = matchingVoice
+
+      utterance.onend = () => setIsSpeaking(false)
+      utterance.onerror = () => setIsSpeaking(false)
+
+      window.speechSynthesis.cancel()
+      setActiveAudio(null)
+      setIsSpeaking(true)
+      window.speechSynthesis.speak(utterance)
     }
+
+    // Prefer the configured Catalyst function. Otherwise use the same-origin
+    // Next.js proxy so Slate deployments do not require cross-origin requests.
+    const ttsFunctionUrl = process.env.NEXT_PUBLIC_TTS_FUNCTION_URL?.trim() || '/api/tts/'
 
     setIsSpeaking(true)
     fetch(ttsFunctionUrl, {
@@ -171,6 +196,10 @@ export function AiChatbot() {
           const errBody = await res.text().catch(() => '')
           throw new Error(`TTS error ${res.status}: ${errBody}`)
         }
+        const contentType = res.headers.get('content-type') || ''
+        if (!contentType.toLowerCase().startsWith('audio/')) {
+          throw new Error(`TTS returned an unexpected content type: ${contentType || 'unknown'}`)
+        }
         const blob = await res.blob()
         if (blob.size === 0) throw new Error('Zoho TTS returned empty audio')
 
@@ -184,18 +213,23 @@ export function AiChatbot() {
         }
         audio.onerror = (e) => {
           console.error('Audio playback error:', e)
-          setIsSpeaking(false)
           setActiveAudio(null)
           URL.revokeObjectURL(audioUrl)
+          speakWithBrowser()
         }
 
         setActiveAudio(audio)
-        await audio.play()
+        try {
+          await audio.play()
+        } catch (error) {
+          setActiveAudio(null)
+          URL.revokeObjectURL(audioUrl)
+          throw error
+        }
       })
       .catch((err) => {
-        console.error('Zoho Catalyst TTS error:', err)
-        setIsSpeaking(false)
-        setActiveAudio(null)
+        console.warn('Zoho Catalyst TTS unavailable; using browser speech:', err)
+        speakWithBrowser()
       })
   }
 
@@ -715,4 +749,3 @@ export function AiChatbot() {
     </>
   )
 }
-

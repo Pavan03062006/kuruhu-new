@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 // ── In-memory token cache ──────────────────────────────────────────────────
 let cachedToken: string | null = null
 let tokenExpiresAt = 0 // Unix ms
@@ -8,10 +11,17 @@ const CLIENT_ID     = process.env.CATALYST_CLIENT_ID     || ''
 const CLIENT_SECRET = process.env.CATALYST_CLIENT_SECRET || ''
 const REFRESH_TOKEN = process.env.CATALYST_TTS_REFRESH_TOKEN || ''
 const ORG_ID        = process.env.CATALYST_ORG           || '60078981735'
+const REDIRECT_URI  = process.env.CATALYST_REDIRECT_URI  || 'http://www.zoho.com/catalyst'
 const TTS_ENDPOINT  = 'https://api.catalyst.zoho.in/quickml/api/v1/models/zia/tts/synthesize'
 const TOKEN_URL     = 'https://accounts.zoho.in/oauth/v2/token'
 
 async function getAccessToken(): Promise<string> {
+  if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
+    throw new Error(
+      'TTS is not configured. Set CATALYST_CLIENT_ID, CATALYST_CLIENT_SECRET, and CATALYST_TTS_REFRESH_TOKEN.'
+    )
+  }
+
   // Return cached token if still valid (with 60 s buffer)
   if (cachedToken && Date.now() < tokenExpiresAt - 60_000) {
     return cachedToken
@@ -22,6 +32,7 @@ async function getAccessToken(): Promise<string> {
     client_id:     CLIENT_ID,
     client_secret: CLIENT_SECRET,
     refresh_token: REFRESH_TOKEN,
+    redirect_uri:  REDIRECT_URI,
   })
 
   const res = await fetch(TOKEN_URL, {
@@ -54,7 +65,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const {
       text    = '',
-      speaker = 'Anu',
+      language = 'en',
+      speaker = language === 'kn' ? 'Anu' : 'Mary',
       speed   = 'moderate',
       pitch   = 'moderate',
       emotion = 'neutral',
@@ -75,7 +87,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         text,
-        language: 'kn',
+        language,
         speaker,
         speed,
         pitch,
@@ -94,10 +106,11 @@ export async function POST(req: NextRequest) {
 
     const arrayBuffer = await ttsRes.arrayBuffer()
     const buffer      = Buffer.from(arrayBuffer)
+    const contentType = ttsRes.headers.get('content-type') || 'audio/wav'
 
     return new Response(buffer, {
       headers: {
-        'Content-Type':   'audio/wav',
+        'Content-Type':   contentType,
         'Content-Length': buffer.byteLength.toString(),
         'Cache-Control':  'no-store',
       },

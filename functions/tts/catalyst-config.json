@@ -1,7 +1,14 @@
 {
-  "name": "tts",
-  "description": "Zoho Catalyst Zia TTS proxy with auto OAuth token refresh",
-  "type": "Advanced IO",
-  "lang": "Node18",
-  "version": 1
+  "deployment": {
+    "name": "tts",
+    "stack": "node22",
+    "type": "advancedio",
+    "env_variables": {
+      "CATALYST_REDIRECT_URI": "http://www.zoho.com/catalyst",
+      "TTS_ALLOWED_ORIGINS": "https://kuruhu-new.onslate.in"
+    }
+  },
+  "execution": {
+    "main": "index.js"
+  }
 }
