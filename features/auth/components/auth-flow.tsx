@@ -79,7 +79,7 @@ export function AuthFlow() {
             Sign in with your verified email address. Your session is bound to your district, role, and audit trail.
           </p>
           <p className="mt-4 text-sm text-slate-400">
-            New user? <Link href="/signup" className="font-semibold text-cyan hover:underline">Create an account</Link>
+            New user? <Link href="/signup/" className="font-semibold text-cyan hover:underline">Create an account</Link>
           </p>
           <ul className="mt-8 space-y-3">
             {['Identity-verified sessions', 'District-scoped access', 'Every action logged'].map(item => (
@@ -227,7 +227,7 @@ export function AuthFlow() {
               {password !== '' && password.length < 8 && <p className="mt-1.5 text-xs text-red-600">Password must contain at least 8 characters.</p>}
               {error && <p className="mt-3 text-xs text-red-600">{error}</p>}
               <p className="mt-4 text-sm text-ink-muted">
-                Don&rsquo;t have an account? <Link href="/signup" className="font-semibold text-cyan-700 hover:underline">Sign up with your email</Link>
+                Don&rsquo;t have an account? <Link href="/signup/" className="font-semibold text-cyan-700 hover:underline">Sign up with your email</Link>
               </p>
             </section>
           )}

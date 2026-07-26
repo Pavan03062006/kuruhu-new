@@ -1098,7 +1098,7 @@ export default function KuruhuApp() {
             </p>
             <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 18 }}>
               <a
-                href="/support"
+                href="/support/"
                 style={{
                   padding: '12px 22px',
                   borderRadius: 10,
@@ -1113,10 +1113,10 @@ export default function KuruhuApp() {
               </a>
             </div>
             <div style={{ display: 'flex', gap: 18, justifyContent: 'center', fontSize: 13 }}>
-              <a href="/privacy" style={{ color: COLORS.linkGreen }}>
+              <a href="/privacy/" style={{ color: COLORS.linkGreen }}>
                 Privacy Policy
               </a>
-              <a href="/terms" style={{ color: COLORS.linkGreen }}>
+              <a href="/terms/" style={{ color: COLORS.linkGreen }}>
                 Terms &amp; Conditions
               </a>
             </div>
@@ -1240,10 +1240,10 @@ export default function KuruhuApp() {
                     Legal
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <a href="/privacy" style={{ fontSize: 13, color: COLORS.linkGreen }}>
+                    <a href="/privacy/" style={{ fontSize: 13, color: COLORS.linkGreen }}>
                       Privacy
                     </a>
-                    <a href="/terms" style={{ fontSize: 13, color: COLORS.linkGreen }}>
+                    <a href="/terms/" style={{ fontSize: 13, color: COLORS.linkGreen }}>
                       Terms
                     </a>
                     <a href="#contact" style={{ fontSize: 13, color: COLORS.linkGreen }}>
@@ -1430,7 +1430,7 @@ export default function KuruhuApp() {
             </div>
 
             <div style={{ textAlign: 'right', marginBottom: 14 }}>
-              <a href="/terms" style={{ fontSize: 13.5, textDecoration: 'underline', color: COLORS.linkGreen }}>
+              <a href="/terms/" style={{ fontSize: 13.5, textDecoration: 'underline', color: COLORS.linkGreen }}>
                 Terms and Privacy Policy
               </a>
             </div>

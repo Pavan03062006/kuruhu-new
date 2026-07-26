@@ -559,7 +559,7 @@ export function LandingPage() {
               <Users className="mx-auto size-8 text-cyan" aria-hidden />
               <h2 className="mt-5 font-display text-2xl font-bold tracking-tight text-white md:text-4xl">See the entire investigation.<br />Act with confidence.</h2>
               <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400">Authorised officers can sign in with their registered mobile number and district.</p>
-              <Link href="/auth" className="group mt-8 inline-flex items-center gap-2 rounded-lg bg-cyan px-8 py-3.5 text-sm font-bold text-navy shadow-lg shadow-cyan/25 transition-all hover:-translate-y-0.5 hover:bg-teal-300">
+              <Link href="/auth/" className="group mt-8 inline-flex items-center gap-2 rounded-lg bg-cyan px-8 py-3.5 text-sm font-bold text-navy shadow-lg shadow-cyan/25 transition-all hover:-translate-y-0.5 hover:bg-teal-300">
                 Sign in to KURUHU <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
             </div>
@@ -575,9 +575,9 @@ export function LandingPage() {
             <span className="text-xs text-slate-500">KURUHU · Karnataka State Police — State Crime Records Bureau</span>
           </div>
           <nav className="flex items-center gap-5" aria-label="Legal">
-            <Link href="/support" className="text-xs text-slate-500 transition-colors hover:text-navy">Support</Link>
-            <Link href="/privacy" className="text-xs text-slate-500 transition-colors hover:text-navy">Privacy</Link>
-            <Link href="/terms" className="text-xs text-slate-500 transition-colors hover:text-navy">Terms</Link>
+            <Link href="/support/" className="text-xs text-slate-500 transition-colors hover:text-navy">Support</Link>
+            <Link href="/privacy/" className="text-xs text-slate-500 transition-colors hover:text-navy">Privacy</Link>
+            <Link href="/terms/" className="text-xs text-slate-500 transition-colors hover:text-navy">Terms</Link>
           </nav>
         </div>
       </footer>

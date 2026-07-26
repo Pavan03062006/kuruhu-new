@@ -133,7 +133,7 @@ export function SignupFlow() {
           </button>
 
           <p className="mt-5 text-center text-sm text-ink-muted">
-            Already verified? <Link href="/auth" className="font-semibold text-cyan-700 hover:underline">Sign in</Link>
+            Already verified? <Link href="/auth/" className="font-semibold text-cyan-700 hover:underline">Sign in</Link>
           </p>
         </form>
       </main>
