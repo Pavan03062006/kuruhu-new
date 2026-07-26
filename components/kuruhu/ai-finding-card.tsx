@@ -42,11 +42,11 @@ export function AiFindingCard({ finding, compact = false, className }: { finding
           <div className="mt-3 flex flex-wrap gap-1.5">
             {finding.relatedFirIds.map(id => {
               const f = firById(id)
-              return f ? <EntityChip key={id} kind="fir" label={`FIR ${f.number}`} href={`/workspace/firs/${f.id}`} /> : null
+              return f ? <EntityChip key={id} kind="fir" label={`FIR ${f.number}`} href={`/workspace/firs/${f.id}/`} /> : null
             })}
             {finding.relatedPersonIds.map(id => {
               const p = personById(id)
-              return p ? <EntityChip key={id} kind="person" label={p.name} href={`/workspace/persons/${p.id}`} /> : null
+              return p ? <EntityChip key={id} kind="person" label={p.name} href={`/workspace/persons/${p.id}/`} /> : null
             })}
           </div>
         </>
@@ -54,7 +54,7 @@ export function AiFindingCard({ finding, compact = false, className }: { finding
 
       <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
         <p className="text-[11px] text-ink-muted">AI findings are not evidence. Verify through source records.</p>
-        <Link href="/workspace/ai-investigator" className="inline-flex items-center gap-1 text-xs font-semibold text-teal-700 hover:text-teal-800">
+        <Link href="/workspace/ai-investigator/" className="inline-flex items-center gap-1 text-xs font-semibold text-teal-700 hover:text-teal-800">
           Open in AI Investigator <ArrowUpRight className="size-3" aria-hidden />
         </Link>
       </div>

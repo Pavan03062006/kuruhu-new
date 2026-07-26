@@ -15,10 +15,10 @@ import { fetchFirs, fetchPersons, fetchAiFindings, fetchNotifications } from '@/
 import { cn } from '@/lib/utils'
 
 const QUICK_ACTIONS = [
-  { label: 'Create FIR', desc: 'Guided 9-step intake', href: '/workspace/firs/new', icon: Plus },
-  { label: 'Search FIR', desc: 'Directory & filters', href: '/workspace/firs', icon: Search },
-  { label: 'Open Graph', desc: 'Entity relationships', href: '/workspace/graph', icon: Network },
-  { label: 'AI Investigator', desc: 'Ask in plain language', href: '/workspace/ai-investigator', icon: BrainCircuit },
+  { label: 'Create FIR', desc: 'Guided 9-step intake', href: '/workspace/firs/new/', icon: Plus },
+  { label: 'Search FIR', desc: 'Directory & filters', href: '/workspace/firs/', icon: Search },
+  { label: 'Open Graph', desc: 'Entity relationships', href: '/workspace/graph/', icon: Network },
+  { label: 'AI Investigator', desc: 'Ask in plain language', href: '/workspace/ai-investigator/', icon: BrainCircuit },
 ]
 
 const PRIORITY_RAIL: Record<Priority, string> = {
