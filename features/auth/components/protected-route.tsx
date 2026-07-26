@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from './auth-provider'
+import { RouteLoadingScreen } from '@/components/states/route-loading-screen'
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth()
@@ -10,21 +11,12 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!loading && !user) {
-      if (typeof window !== 'undefined') {
-        window.location.href = '/auth/'
-      }
+      router.replace('/auth/')
     }
-  }, [loading, user])
+  }, [loading, router, user])
 
   if (loading || !user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-canvas p-6 text-center text-sm font-medium text-slate-500">
-        <div className="space-y-2">
-          <div className="mx-auto size-8 animate-spin rounded-full border-2 border-navy border-t-transparent" />
-          <p>Verifying active session...</p>
-        </div>
-      </div>
-    )
+    return <RouteLoadingScreen message={loading ? 'Verifying active session…' : 'Redirecting to sign in…'} />
   }
 
   return <>{children}</>
