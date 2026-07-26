@@ -18,7 +18,7 @@ export function PersonProfile({ personId }: { personId: string }) {
       fetchFirs().catch(() => []),
     ]).then(([pList, fList]) => {
       const found = pList.find(p => p.id === personId || p.id === String(personId))
-      setPerson(found || pList[0] || null)
+      setPerson(found ?? null)
       setFirs(fList)
     }).finally(() => setLoading(false))
   }, [personId])
@@ -28,7 +28,15 @@ export function PersonProfile({ personId }: { personId: string }) {
   }
 
   if (!person) {
-    return <div className="p-8 text-sm text-red-600">Person profile not found in Supabase database.</div>
+    return (
+      <div className="mx-auto max-w-lg rounded-xl border border-red-200 bg-red-50 p-8 text-center">
+        <h1 className="text-lg font-bold text-red-800">Person profile not found</h1>
+        <p className="mt-2 text-sm text-red-700">No person with ID <span className="font-mono font-semibold">{personId}</span> exists in the current database scope.</p>
+        <Link href="/workspace/persons/" className="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-700">
+          <ArrowLeft className="size-4" aria-hidden /> Return to Person Directory
+        </Link>
+      </div>
+    )
   }
 
   const linkedFirs = firs.filter(f => person.firIds.includes(f.id) || f.personIds.includes(person.id))

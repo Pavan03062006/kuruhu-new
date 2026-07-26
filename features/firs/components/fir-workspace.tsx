@@ -23,7 +23,7 @@ export function FirWorkspace({ firId }: { firId: string }) {
       fetchEvidence().catch(() => []),
     ]).then(([fList, pList, eList]) => {
       const found = fList.find(f => f.id === firId || f.id === String(firId))
-      setFir(found || fList[0] || null)
+      setFir(found ?? null)
       setPersons(pList)
       setEvidence(eList)
     }).finally(() => setLoading(false))
@@ -34,7 +34,15 @@ export function FirWorkspace({ firId }: { firId: string }) {
   }
 
   if (!fir) {
-    return <div className="p-8 text-sm text-red-600">FIR record not found in Supabase database.</div>
+    return (
+      <div className="mx-auto max-w-lg rounded-xl border border-red-200 bg-red-50 p-8 text-center">
+        <h1 className="text-lg font-bold text-red-800">FIR record not found</h1>
+        <p className="mt-2 text-sm text-red-700">No FIR with ID <span className="font-mono font-semibold">{firId}</span> exists in the current database scope.</p>
+        <Link href="/workspace/firs/" className="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-700">
+          <ArrowLeft className="size-4" aria-hidden /> Return to FIR Directory
+        </Link>
+      </div>
+    )
   }
 
   const linkedPersons = persons.filter(p => fir.personIds.includes(p.id) || p.firIds.includes(fir.id))
