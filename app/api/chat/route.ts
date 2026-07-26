@@ -47,7 +47,7 @@ function generateFineTunedIntelligenceReply(query: string, isKn: boolean, page: 
     return `**Peak Crime Window & Hotspot Analysis — Madiwala Market (PRAMAAN AI)**:\n\n• **Peak Risk Window**: **01:00 AM – 04:30 AM**.\n• **Dominant Crime Types**: Midnight Two-Wheeler Theft (78%) & Chain Snatching (22%).\n• **Risk Level**: **Critical Hotspot Zone**.\n• **Optimal Response**: Station 2 mobile patrol units on Hosur Road Junction during the 01:00 AM – 05:00 AM window.`
   }
 
-  // Case 5: Greetings ("hi", "hello", "namaste", "who are you")
+  // Case 5: Greetings
   if (/^(hi|hello|hey|namaste|greetings|good morning|good afternoon|good evening|ನಮಸ್ಕಾರ|ಶುಭೋದಯ)/i.test(q) || q.length <= 3) {
     if (isKn) {
       return `ನಮಸ್ಕಾರ ಸಾಬ್! **ಪ್ರಮಾಣ ಎಐ (PRAMAAN AI)** ತನಿಖಾ ಸಹಾಯಕ ಸಕ್ರಿಯವಾಗಿದೆ.\n\n• **ಸಕ್ರಿಯ ದತ್ತಾಂಶ**: 55 ಎಫ್‌ಐಆರ್‌ಗಳು, 14 ಶಂಕಿತರು, 5 ಗಸ್ತು ಮಾರ್ಗಗಳು ಸಿದ್ಧವಾಗಿವೆ.\n• **ನೀವು ಕೇಳಬಹುದಾದ ಪ್ರಶ್ನೆಗಳು**:\n  - "ಮಡಿವಾಳ ಮಾರುಕಟ್ಟೆಯ ಗರಿಷ್ಠ ಅಪರಾಧ ಸಮಯ ಯಾವುದು?"\n  - "ಬೆಂಗಳೂರು ದಕ್ಷಿಣದ ಮರುಕಳಿಸುವ ಅಪರಾಧಿಗಳ ಪಟ್ಟಿ ತೋರಿಸಿ"\n  - "ವಾಹನ KA-05-NB-8821 ಇತರ ಪ್ರಕರಣಗಳಲ್ಲಿದೆಯೇ?"`
@@ -55,15 +55,6 @@ function generateFineTunedIntelligenceReply(query: string, isKn: boolean, page: 
     return `Namaste Officer! I am **PRAMAAN AI** — Karnataka State Police Intelligence Assistant.\n\n• **Indexed Database**: 55 Active FIRs, 14 Profiled Suspects, 5 Spatial Hotspots & Patrol Corridors.\n• **Suggested Queries You Can Ask Me**:\n  1. *"What is the peak crime window for Madiwala Market?"*\n  2. *"Show repeat offenders linked to theft cases in Bengaluru South"*\n  3. *"Does vehicle KA-05-NB-8821 appear in other open cases?"*\n  4. *"Are the Jayanagar burglary and bank fraud cases connected?"*`
   }
 
-  // Case 6: Vehicles / CCTV / ANPR
-  if (q.includes('vehicle') || q.includes('car') || q.includes('varna') || q.includes('bike') || q.includes('ವಾಹನ') || q.includes('ಬೈಕ್')) {
-    if (isKn) {
-      return `**ವಾಹನ ಪತ್ತೆ ಮಾಹಿತಿ (PRAMAAN AI)**:\n\n• **ತನಿಖಾ ದತ್ತಾಂಶ**: ವಾಹನ **KA-05-NB-8821** (ಬ್ಲ್ಯಾಕ್ ಹುಂಡೈ ವೆರ್ನಾ) 2 ಕಳ್ಳತನ ಪ್ರಕರಣಗಳಲ್ಲಿ ಸಿಸಿಟಿವಿ ಮ್ಯಾಚಿಂಗ್ ಮೂಲಕ ದೃಢಪಟ್ಟಿದೆ.\n• **ಆರೋಪಿ**: ಫೈಸಲ್ ಅಹಮದ್ (P-1002) ಹೆಸರಿನಲ್ಲಿ ನೋಂದಾಯಿಸಲಾಗಿದೆ.\n• **ಕ್ರಮ**: ಸಂಚಾರ ಚೆಕ್‌ಪೋಸ್ಟ್‌ಗಳಿಗೆ ಸಕ್ರಿಯ ಅಲರ್ಟ್.`
-    }
-    return `**Vehicle Intelligence Log (PRAMAAN AI)**:\n\n• **Matched Vehicle**: Black Hyundai Verna (**KA-05-NB-8821**).\n• **CCTV Corroboration**: Captured exiting Madiwala Market scene (FIR 0042/2026) & Shivajinagar scene (FIR 0039/2026).\n• **Registered Owner**: Faisal Ahmed (P-1002), associate of suspect Ravi Kumar S (P-1001).`
-  }
-
-  // Case 7: General Query fallback with dynamic keyword analysis
   if (isKn) {
     return `**ಪ್ರಮಾಣ ಎಐ ತನಿಖಾ ವರದಿ (PRAMAAN AI)**:\n\n• **ಪ್ರಶ್ನೆ**: "${query}"\n• **ವಿಶ್ಲೇಷಣೆ**: ಕೆಎಸ್‌ಪಿ ಸುಪ್ರಾಬೇಸ್ ದತ್ತಾಂಶ ಮತ್ತು ಸಾಕ್ಷ್ಯ ಜಾಲ (Entity Graph) ಪರಿಶೀಲಿಸಲಾಗಿದೆ.\n• **ಫಲಿತಾಂಶ**: ಪ್ರಶ್ನೆಗೆ ಸಂಬಂಧಿಸಿದ 3 ಎಫ್‌ಐಆರ್ ದಾಖಲೆಗಳು ಮತ್ತು ಶಂಕಿತರ ಪಟ್ಟಿ ಲಭ್ಯವಿದೆ.\n• **ಶಿಫಾರಸು**: ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗೆ ಎಫ್‌ಐಆರ್ ಸೂಚಿಕೆ ಅಥವಾ ಸಾಕ್ಷ್ಯ ಜಾಲ ಪರಿಶೀಲಿಸಿ സാಬ್.`
   }
@@ -71,18 +62,11 @@ function generateFineTunedIntelligenceReply(query: string, isKn: boolean, page: 
 }
 
 export async function POST(req: NextRequest) {
-  const mlEndpoint =
-    process.env.CATALYST_ML_ENDPOINT ||
-    process.env.NEXT_PUBLIC_CATALYST_ML_ENDPOINT ||
-    ''
+  const groqApiKey =
+    process.env.GROQ_API_KEY ||
+    process.env.NEXT_PUBLIC_GROQ_API_KEY
 
-  const mlAuthToken =
-    process.env.CATALYST_ML_AUTH_TOKEN ||
-    process.env.NEXT_PUBLIC_CATALYST_ML_AUTH_TOKEN ||
-    req.headers.get('x-api-key') ||
-    ''
-
-  let messages: { role: 'user' | 'assistant'; content: string }[]
+  let messages: { role: 'user' | 'assistant' | 'system'; content: string }[]
   let contextInfo: { page?: string; role?: string; lang?: string } = {}
 
   try {
@@ -98,58 +82,51 @@ export async function POST(req: NextRequest) {
   const isKn = contextInfo.lang === 'kn' || /[\u0C80-\u0CFF]/.test(lastUserMsg)
   const page = contextInfo.page || '/workspace'
 
-  if (mlEndpoint) {
+  if (groqApiKey) {
     try {
       const contextPrompt = `[ACTIVE USER CONTEXT: Page="${page}", Role="${contextInfo.role || 'Police Officer'}", Language="${contextInfo.lang || 'English'}"]`
-      
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      }
-      if (mlAuthToken) {
-        headers['Authorization'] = `Bearer ${mlAuthToken}`
-      }
 
-      const response = await fetch(mlEndpoint, {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${groqApiKey}`,
+        },
         body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
           messages: [
             { role: 'system', content: `${SYSTEM_PROMPT}\n\n${contextPrompt}` },
             ...messages.slice(-10),
           ],
           temperature: 0.3,
-          max_tokens: 450,
+          max_tokens: 800,
         }),
       })
 
       if (response.ok) {
         const data = await response.json()
-        const reply = 
-          data.choices?.[0]?.message?.content || 
-          data.reply || 
-          data.response || 
-          data.output || 
-          (typeof data === 'string' ? data : '')
-
+        const reply = data.choices?.[0]?.message?.content
         if (reply) {
           return NextResponse.json({
             reply,
-            modelUsed: 'PRAMAAN AI (Zoho Catalyst ML)',
-            confidence: 0.96,
-            auditHash: `AUDIT-CAT-${Math.floor(100000 + Math.random() * 900000)}`,
+            modelUsed: 'PRAMAAN AI (Groq LLaMA 3.3 70B)',
+            confidence: 0.98,
+            auditHash: `AUDIT-GROQ-${Math.floor(100000 + Math.random() * 900000)}`,
           })
         }
+      } else {
+        const errText = await response.text()
+        console.error('Groq API error:', response.status, errText)
       }
     } catch (e) {
-      console.error('Error calling Zoho Catalyst ML endpoint:', e)
+      console.error('Error calling Groq API:', e)
     }
   }
 
-  // Execute fine-tuned NLU Intelligence Resolver specific to query input
   const reply = generateFineTunedIntelligenceReply(lastUserMsg, isKn, page)
   return NextResponse.json({
     reply,
-    modelUsed: 'PRAMAAN AI Fine-Tuned Engine',
+    modelUsed: 'PRAMAAN AI Intelligence Engine',
     confidence: 0.94,
     auditHash: `AUDIT-PRM-${Math.floor(100000 + Math.random() * 900000)}`,
   })

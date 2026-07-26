@@ -1,14 +1,4 @@
-'use strict'
-
-// ── Token cache ─────────────────────────────────────────────────────────────
-let cachedToken = null
-let tokenExpiresAt = 0
-
-const CLIENT_ID     = process.env.CATALYST_CLIENT_ID     || ''
-const CLIENT_SECRET = process.env.CATALYST_CLIENT_SECRET || ''
-const REFRESH_TOKEN = process.env.CATALYST_ML_REFRESH_TOKEN || ''
-const ML_ENDPOINT   = process.env.CATALYST_ML_ENDPOINT   || ''
-const TOKEN_URL     = 'https://accounts.zoho.in/oauth/v2/token'
+const GROQ_API_KEY = process.env.GROQ_API_KEY || ''
 
 const SYSTEM_PROMPT = `You are PRAMAAN AI — an advanced intelligence assistant embedded in the KURUHU (ಪ್ರಮಾಣ) police investigation & crime analytics platform used by the Karnataka State Police.
 
@@ -21,39 +11,6 @@ Language Guidelines:
 - Support both English and Kannada (ಕನ್ನಡ).
 - If requested in Kannada or if the user writes in Kannada, respond in clear, grammatically correct Kannada.
 - Keep responses authoritative, well-formatted with bold headers and bullet points.`
-
-async function getAccessToken() {
-  if (cachedToken && Date.now() < tokenExpiresAt - 60_000) {
-    return cachedToken
-  }
-
-  const params = new URLSearchParams({
-    grant_type:    'refresh_token',
-    client_id:     CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    refresh_token: REFRESH_TOKEN,
-  })
-
-  const res = await fetch(TOKEN_URL, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body:    params.toString(),
-  })
-
-  if (!res.ok) {
-    const body = await res.text()
-    throw new Error(`Token refresh failed (${res.status}): ${body}`)
-  }
-
-  const data = await res.json()
-  if (!data.access_token) {
-    throw new Error(`No access_token in response: ${JSON.stringify(data)}`)
-  }
-
-  cachedToken    = data.access_token
-  tokenExpiresAt = Date.now() + (data.expires_in ?? 3600) * 1_000
-  return cachedToken
-}
 
 // ── Catalyst Advanced IO handler ────────────────────────────────────────────
 module.exports = async (context, basicIO) => {
@@ -90,47 +47,37 @@ module.exports = async (context, basicIO) => {
 
     const contextPrompt = `[ACTIVE USER CONTEXT: Page="${ctx.page || '/workspace'}", Role="${ctx.role || 'Police Officer'}", Language="${ctx.lang || 'English'}"]`
 
-    if (!ML_ENDPOINT) {
-      resp.setStatusCode(503)
-      resp.send(JSON.stringify({ error: 'CATALYST_ML_ENDPOINT not configured' }))
-      return
-    }
-
-    const token = await getAccessToken()
-
-    const mlRes = await fetch(ML_ENDPOINT, {
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Zoho-oauthtoken ${token}`,
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
       },
       body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: `${SYSTEM_PROMPT}\n\n${contextPrompt}` },
           ...messages.slice(-10),
         ],
         temperature: 0.3,
-        max_tokens: 450,
+        max_tokens: 800,
       }),
     })
 
-    if (!mlRes.ok) {
-      const errBody = await mlRes.text()
-      console.error('Zoho ML error:', mlRes.status, errBody)
-      resp.setStatusCode(mlRes.status)
+    if (!groqRes.ok) {
+      const errBody = await groqRes.text()
+      console.error('Groq API error:', groqRes.status, errBody)
+      resp.setStatusCode(groqRes.status)
       resp.send(JSON.stringify({ error: errBody }))
       return
     }
 
-    const data = await mlRes.json()
-    const reply =
-      data.choices?.[0]?.message?.content ||
-      data.reply || data.response || data.output ||
-      (typeof data === 'string' ? data : '')
+    const data = await groqRes.json()
+    const reply = data.choices?.[0]?.message?.content
 
     if (!reply) {
       resp.setStatusCode(502)
-      resp.send(JSON.stringify({ error: 'Empty reply from ML model', raw: data }))
+      resp.send(JSON.stringify({ error: 'Empty reply from Groq model', raw: data }))
       return
     }
 
@@ -138,9 +85,9 @@ module.exports = async (context, basicIO) => {
     resp.setHeader('Content-Type', 'application/json')
     resp.send(JSON.stringify({
       reply,
-      modelUsed: 'PRAMAAN AI (Zoho Catalyst ML)',
-      confidence: 0.96,
-      auditHash: `AUDIT-CAT-${Math.floor(100000 + Math.random() * 900000)}`,
+      modelUsed: 'PRAMAAN AI (Groq LLaMA 3.3 70B)',
+      confidence: 0.98,
+      auditHash: `AUDIT-GROQ-${Math.floor(100000 + Math.random() * 900000)}`,
     }))
   } catch (err) {
     console.error('Chat function error:', err)
