@@ -48,7 +48,7 @@ export function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
   const signOut = async () => {
     if (onClose) onClose()
     await logout()
-    router.replace('/')
+    window.location.href = '/auth/'
   }
 
   const NAV = [

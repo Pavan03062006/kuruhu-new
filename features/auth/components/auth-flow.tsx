@@ -13,7 +13,7 @@ const STEPS = ['Email', 'District', 'Language', 'Terms', 'Complete'] as const
 
 export function AuthFlow() {
   const router = useRouter()
-  const { login } = useAuth()
+  const { user, login } = useAuth()
   const [step, setStep] = useState(0)
   const [email, setEmail] = useState('')
   const [district, setDistrict] = useState('')
@@ -107,6 +107,19 @@ export function AuthFlow() {
 
           {step === 0 && (
             <section aria-labelledby="step-email">
+              {user && (
+                <div className="mb-6 rounded-xl border border-teal-200 bg-teal-50 p-4 text-sm text-teal-900 shadow-sm">
+                  <p className="font-bold">Active Session Found</p>
+                  <p className="mt-1 text-xs text-teal-700">Signed in as <strong>{user.display_name}</strong> ({user.district}).</p>
+                  <button
+                    type="button"
+                    onClick={() => { window.location.href = '/workspace/' }}
+                    className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-xs font-bold text-white transition-all hover:bg-navy-700"
+                  >
+                    Go to Command Centre <ArrowRight className="size-3.5" aria-hidden />
+                  </button>
+                </div>
+              )}
               <span className="inline-flex size-11 items-center justify-center rounded-xl bg-navy text-cyan"><Mail className="size-5" aria-hidden /></span>
               <h2 id="step-email" className="mt-5 text-2xl font-bold tracking-tight text-ink">Enter your email address</h2>
               <p className="mt-1.5 text-sm text-ink-muted">Use the verified email address registered with your account.</p>

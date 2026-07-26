@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { BrowserFrame } from '@/components/landing/browser-frame'
 import { Constellation } from '@/components/landing/constellation'
+import { useAuth } from '@/features/auth/components/auth-provider'
 import { cn } from '@/lib/utils'
 
 /* ------------------------------ content ------------------------------ */
@@ -145,6 +146,7 @@ function TypingDemo() {
 /* ------------------------------ page ------------------------------ */
 
 export function LandingPage() {
+  const { user } = useAuth()
   const [openFaq, setOpenFaq] = useState<number | null>(0)
   const reduce = useReducedMotion()
 
@@ -169,12 +171,20 @@ export function LandingPage() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Link href="/signup/" className="inline-flex items-center rounded-lg border border-navy px-4 py-2 text-[13px] font-bold text-navy transition-all hover:-translate-y-px hover:bg-slate-50">
-              Sign up
-            </Link>
-            <Link href="/auth/" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-[13px] font-bold text-white transition-all hover:-translate-y-px hover:bg-navy-700">
-              Sign in <ArrowRight className="size-3.5" aria-hidden />
-            </Link>
+            {!user ? (
+              <>
+                <Link href="/signup/" className="inline-flex items-center rounded-lg border border-navy px-4 py-2 text-[13px] font-bold text-navy transition-all hover:-translate-y-px hover:bg-slate-50">
+                  Sign up
+                </Link>
+                <Link href="/auth/" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-[13px] font-bold text-white transition-all hover:-translate-y-px hover:bg-navy-700">
+                  Sign in <ArrowRight className="size-3.5" aria-hidden />
+                </Link>
+              </>
+            ) : (
+              <Link href="/workspace/" className="inline-flex items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-[13px] font-bold text-white transition-all hover:-translate-y-px hover:bg-navy-700">
+                Command Centre <ArrowRight className="size-3.5" aria-hidden />
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -209,12 +219,20 @@ export function LandingPage() {
           </Reveal>
           <Reveal delay={0.24}>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/signup/" className="inline-flex items-center rounded-lg border border-navy bg-white px-7 py-3.5 text-sm font-bold text-navy shadow-sm transition-all hover:-translate-y-0.5 hover:bg-slate-50">
-                Create account
-              </Link>
-              <Link href="/auth/" className="group inline-flex items-center gap-2 rounded-lg bg-navy px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-navy/20 transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-navy/30">
-                Sign in <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
-              </Link>
+              {!user ? (
+                <>
+                  <Link href="/signup/" className="inline-flex items-center rounded-lg border border-navy bg-white px-7 py-3.5 text-sm font-bold text-navy shadow-sm transition-all hover:-translate-y-0.5 hover:bg-slate-50">
+                    Create account
+                  </Link>
+                  <Link href="/auth/" className="group inline-flex items-center gap-2 rounded-lg bg-navy px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-navy/20 transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-navy/30">
+                    Sign in <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                  </Link>
+                </>
+              ) : (
+                <Link href="/workspace/" className="group inline-flex items-center gap-2 rounded-lg bg-navy px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-navy/20 transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-navy/30">
+                  Open Command Centre <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                </Link>
+              )}
               <a href="#tour" className="inline-flex items-center gap-2 rounded-lg border border-line bg-white px-7 py-3.5 text-sm font-semibold text-navy shadow-sm transition-colors hover:bg-slate-50">
                 <PlayCircle className="size-4 text-teal-600" aria-hidden /> Watch investigation flow
               </a>
@@ -559,9 +577,15 @@ export function LandingPage() {
               <Users className="mx-auto size-8 text-cyan" aria-hidden />
               <h2 className="mt-5 font-display text-2xl font-bold tracking-tight text-white md:text-4xl">See the entire investigation.<br />Act with confidence.</h2>
               <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400">Authorised officers can sign in with their registered mobile number and district.</p>
-              <Link href="/auth/" className="group mt-8 inline-flex items-center gap-2 rounded-lg bg-cyan px-8 py-3.5 text-sm font-bold text-navy shadow-lg shadow-cyan/25 transition-all hover:-translate-y-0.5 hover:bg-teal-300">
-                Sign in to KURUHU <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
-              </Link>
+              {!user ? (
+                <Link href="/auth/" className="group mt-8 inline-flex items-center gap-2 rounded-lg bg-cyan px-8 py-3.5 text-sm font-bold text-navy shadow-lg shadow-cyan/25 transition-all hover:-translate-y-0.5 hover:bg-teal-300">
+                  Sign in to KURUHU <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                </Link>
+              ) : (
+                <Link href="/workspace/" className="group mt-8 inline-flex items-center gap-2 rounded-lg bg-cyan px-8 py-3.5 text-sm font-bold text-navy shadow-lg shadow-cyan/25 transition-all hover:-translate-y-0.5 hover:bg-teal-300">
+                  Open Command Centre <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                </Link>
+              )}
             </div>
           </div>
         </Reveal>

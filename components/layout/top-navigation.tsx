@@ -18,7 +18,7 @@ export function TopNavigation({ onMenuToggle }: TopNavigationProps) {
   const { language, setLanguage } = useLanguage()
   const router = useRouter()
   const unread = NOTIFICATIONS.filter(n => !n.read).length
-  const signOut = async () => { await logout(); router.replace('/') }
+  const signOut = async () => { await logout(); window.location.href = '/auth/' }
 
   const displayName = user?.display_name || 'Investigating Officer'
   const userRoleLabel = user?.role === 'admin' ? 'System Admin' : user?.role === 'civilian' ? 'Citizen' : 'Investigating Officer'

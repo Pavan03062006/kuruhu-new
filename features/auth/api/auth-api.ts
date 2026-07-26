@@ -166,12 +166,7 @@ export const authApi = {
       }
     } catch {}
 
-    return buildDefaultUser({
-      identifier: 'officer@ksp.gov.in',
-      role: 'officer',
-      district: 'Bengaluru (Urban)',
-      displayName: 'Insp. Meera Kulkarni',
-    })
+    return null
   },
 
   async logout() {
